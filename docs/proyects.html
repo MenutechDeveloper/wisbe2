@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html data-bs-theme="dark" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisbe - Projects</title>
+    <link rel="icon" type="image/png" sizes="1662x604" href="./assets/img/iconwisbe.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="./assets/css/proyectstyle.css">
+
+    <script src="./assets/js/jquery-3.2.1.js"></script>
+    <script src="./assets/js/script.js"></script>
+</head>
+
+<body class="luxury-theme">
+    
+    <nav class="navbar navbar-expand-lg fixed-top transition-all" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="./assets/img/wisbelogo.png" alt="Wisbe" class="navbar-logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navcol-1">
+                <span class="fa fa-bars text-white fs-2"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="./index.html">HOME</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">SERVICES</a>
+                        <ul class="dropdown-menu glass-menu">
+                            <li><a class="dropdown-item" href="./seo.html">SEO Optimization</a></li>
+                            <li><a class="dropdown-item" href="./socialmedia.html">Social Media Strategy</a></li>
+                            <li><a class="dropdown-item" href="./googleads.html">Google Ads Campaigns</a></li>
+                            <li><a class="dropdown-item" href="./websitedesing.html">Premium Web Design</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link active-link" href="./proyects.html">PROJECTS</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./pricing.html">PRICING</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="contact.html" role="button" data-bs-toggle="dropdown">CONTACT</a>
+                        <ul class="dropdown-menu glass-menu">
+                            <li><a class="dropdown-item" href="tel:+18778590850"><i class="fa fa-phone me-2"></i> 877-859-0858</a></li>
+                            <li><a class="dropdown-item" href="mailto:contact@wisbe.xyz"><i class="fa fa-envelope me-2"></i> contact@wisbe.xyz</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fa fa-map-marker-alt me-2"></i> Dover, DE</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <button class="btn btn-luxury ms-lg-4" type="button">CLIENT LOGIN</button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-hero page-hero-projects">
+        <div class="hero-bg-overlay"></div>
+        <div class="container position-relative z-2 h-100 d-flex flex-column justify-content-center text-center">
+            <h1 class="display-3 mb-3" data-aos="fade-up">Our <span class="text-gradient">Portfolio</span></h1>
+            <p class="lead text-white-50" data-aos="fade-up" data-aos-delay="200">Discover how we transform brands through digital excellence</p>
+        </div>
+    </header>
+    
+    <div class="wrap bg-dark-section">
+        <div class="container store-wrapper">
+            
+            <div class="category_list mb-5" data-aos="fade-up">
+                <a href="#" class="category_item ct_item-active" category="all">All</a>
+                <a href="#" class="category_item" category="contractor">Contractor</a>
+                <a href="#" class="category_item" category="business">Business</a>
+                <a href="#" class="category_item" category="salon">Hair salon</a>
+                <a href="#" class="category_item" category="starter">Starter</a>
+            </div>
+
+            <section id="portfolio" class="portfolio">
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4 product-item" category="salon" data-aos="fade-up">
+                        <a class="d-block mx-auto portfolio-item" href="#portfolio-modal-1" data-bs-toggle="modal">
+                            <div class="d-flex portfolio-item-caption position-absolute h-100 w-100">
+                                <div class="text-center text-white my-auto portfolio-item-caption-content w-100">
+                                    <i class="fa fa-search-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            <img class="img-fluid" src="./assets/img/carolsw.png" alt="Hair Salon Project" />
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-4 product-item" category="contractor" data-aos="fade-up" data-aos-delay="100">
+                        <a class="d-block mx-auto portfolio-item" href="#portfolio-modal-2" data-bs-toggle="modal">
+                            <div class="d-flex portfolio-item-caption position-absolute h-100 w-100">
+                                <div class="text-center text-white my-auto portfolio-item-caption-content w-100">
+                                    <i class="fa fa-search-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            <img class="img-fluid" src="./assets/img/tonysw.png" alt="Contractor Project" />
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 product-item" category="business" data-aos="fade-up" data-aos-delay="200">
+                        <a class="d-block mx-auto portfolio-item" href="#portfolio-modal-3" data-bs-toggle="modal">
+                            <div class="d-flex portfolio-item-caption position-absolute h-100 w-100">
+                                <div class="text-center text-white my-auto portfolio-item-caption-content w-100">
+                                    <i class="fa fa-search-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            <img class="img-fluid" src="./assets/img/vexaw.png" alt="Business Project" />
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 product-item" category="starter" data-aos="fade-up">
+                        <a class="d-block mx-auto portfolio-item" href="#portfolio-modal-4" data-bs-toggle="modal">
+                            <div class="d-flex portfolio-item-caption position-absolute h-100 w-100">
+                                <div class="text-center text-white my-auto portfolio-item-caption-content w-100">
+                                    <i class="fa fa-search-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            <svg width="100%" height="auto" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                                <rect width="800" height="600" fill="#1a1a1a"/>
+                                <rect x="200" y="150" width="400" height="300" rx="10" fill="none" stroke="#ff6b00" stroke-width="4" stroke-dasharray="10,10"/>
+                                <circle cx="400" cy="250" r="40" fill="none" stroke="#ff6b00" stroke-width="4"/>
+                                <path d="M360 350 L440 350" stroke="#ff6b00" stroke-width="4" stroke-linecap="round"/>
+                                <path d="M360 380 L440 380" stroke="#ff6b00" stroke-width="4" stroke-linecap="round"/>
+                                <text x="400" y="500" font-family="'Playfair Display', serif" font-size="30" fill="#ffffff" text-anchor="middle" letter-spacing="2">STARTER PROJECT</text>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 product-item" category="business" data-aos="fade-up" data-aos-delay="100">
+                        <a class="d-block mx-auto portfolio-item" href="#portfolio-modal-5" data-bs-toggle="modal">
+                            <div class="d-flex portfolio-item-caption position-absolute h-100 w-100">
+                                <div class="text-center text-white my-auto portfolio-item-caption-content w-100">
+                                    <i class="fa fa-search-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            <img class="img-fluid" src="https://menutechdeveloper.github.io/bddImg/assets/img/coburngFlyer.png" alt="Coburg Project" />
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 product-item" category="business" data-aos="fade-up" data-aos-delay="200">
+                        <a class="d-block mx-auto portfolio-item" href="#portfolio-modal-6" data-bs-toggle="modal">
+                            <div class="d-flex portfolio-item-caption position-absolute h-100 w-100">
+                                <div class="text-center text-white my-auto portfolio-item-caption-content w-100">
+                                    <i class="fa fa-search-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            <img class="img-fluid" src="https://menutechdeveloper.github.io/bddImg/assets/img/altamarFlyer.png" alt="Altamar Project" />
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 product-item" category="business" data-aos="fade-up">
+                        <a class="d-block mx-auto portfolio-item" href="#portfolio-modal-7" data-bs-toggle="modal">
+                            <div class="d-flex portfolio-item-caption position-absolute h-100 w-100">
+                                <div class="text-center text-white my-auto portfolio-item-caption-content w-100">
+                                    <i class="fa fa-search-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            <img class="img-fluid" src="https://menutechdeveloper.github.io/bddImg/assets/img/alegriaFlyer.png" alt="Alegria Project" />
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 product-item" category="business" data-aos="fade-up" data-aos-delay="100">
+                        <a class="d-block mx-auto portfolio-item" href="#portfolio-modal-8" data-bs-toggle="modal">
+                            <div class="d-flex portfolio-item-caption position-absolute h-100 w-100">
+                                <div class="text-center text-white my-auto portfolio-item-caption-content w-100">
+                                    <i class="fa fa-search-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            <img class="img-fluid" src="https://menutechdeveloper.github.io/bddImg/assets/img/balompie.png" alt="Balompie Project" />
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 product-item" category="business" data-aos="fade-up" data-aos-delay="200">
+                        <a class="d-block mx-auto portfolio-item" href="#portfolio-modal-9" data-bs-toggle="modal">
+                            <div class="d-flex portfolio-item-caption position-absolute h-100 w-100">
+                                <div class="text-center text-white my-auto portfolio-item-caption-content w-100">
+                                    <i class="fa fa-search-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            <img class="img-fluid" src="https://menutechdeveloper.github.io/bddImg/assets/img/laschamasQR.png" alt="Las Chamas Project" />
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="d-lg-none scroll-to-top position-fixed rounded"><a class="text-center d-block rounded text-white" href="#page-top"><i class="fa fa-chevron-up"></i></a></div>
+
+    <div class="modal fade text-center" id="portfolio-modal-1" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="col-lg-10 mx-auto">
+                                <h3 class="mb-4 text-orange">Beauty Carol</h3>
+                                <a href="https://beautycarol.bss.design/" target="_blank" class="mb-3 d-block"><img src="./assets/img/beautyweb2.png" class="img-fluid rounded mb-3"></a>
+                                <img src="./assets/img/shirtcarol.png" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-5">
+                    <button class="btn btn-luxury mx-auto" data-bs-dismiss="modal">
+                        <i class="fa fa-times me-2"></i> Close Project
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="portfolio-modal-2" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0"><button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body">
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="col-lg-10 mx-auto">
+                                <h3 class="mb-4 text-orange">Tony's Contractor</h3>
+                                <a href="https://tccsd96.com/" target="_blank" class="mb-3 d-block"><img src="./assets/img/mockphone.png" class="img-fluid rounded mb-3"></a>
+                                <img src="./assets/img/mockhuddy.jpg" class="img-fluid rounded mb-3">
+                                <img src="./assets/img/mockhuddy2.png" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-5"><button class="btn btn-luxury mx-auto" data-bs-dismiss="modal"><i class="fa fa-times me-2"></i> Close Project</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="portfolio-modal-3" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0"><button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body">
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="col-lg-10 mx-auto">
+                                <h3 class="mb-4 text-orange">Vexa Business</h3>
+                                <img src="./assets/img/menutech%20(46).jpg" class="img-fluid rounded mb-3">
+                                <img src="./assets/img/menutech%20(43).jpg" class="img-fluid rounded mb-3">
+                                <img src="./assets/img/menutech%20(44).jpg" class="img-fluid rounded mb-3">
+                                <img src="./assets/img/menutech%20(45).jpg" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-5"><button class="btn btn-luxury mx-auto" data-bs-dismiss="modal"><i class="fa fa-times me-2"></i> Close Project</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="portfolio-modal-4" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0"><button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body">
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="col-lg-10 mx-auto">
+                                <h3 class="mb-4 text-orange">Fridas</h3>
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/fridasPoster.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/st1.jpg" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/fridasDoorposter.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/fridasFlyer.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/fridasQR.png" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-5"><button class="btn btn-luxury mx-auto" data-bs-dismiss="modal"><i class="fa fa-times me-2"></i> Close Project</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="portfolio-modal-5" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0"><button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body">
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="col-lg-10 mx-auto">
+                                <h3 class="mb-4 text-orange">Coburg</h3>
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/coburngFlyer.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/st5.jpg" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/coburgPoster.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/coburgQR.png" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-5"><button class="btn btn-luxury mx-auto" data-bs-dismiss="modal"><i class="fa fa-times me-2"></i> Close Project</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="portfolio-modal-6" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0"><button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body">
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="col-lg-10 mx-auto">
+                                <h3 class="mb-4 text-orange">Altamar</h3>
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/altamarFlyer.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/altamar.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/altamarFlyer.png" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-5"><button class="btn btn-luxury mx-auto" data-bs-dismiss="modal"><i class="fa fa-times me-2"></i> Close Project</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="portfolio-modal-7" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0"><button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body">
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="col-lg-10 mx-auto">
+                                <h3 class="mb-4 text-orange">Alegria</h3>
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/alegriaFlyer.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/st3.jpg" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/alegriaPoster.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/alegriaQR2.png" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-5"><button class="btn btn-luxury mx-auto" data-bs-dismiss="modal"><i class="fa fa-times me-2"></i> Close Project</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="portfolio-modal-8" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0"><button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body">
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="col-lg-10 mx-auto">
+                                <h3 class="mb-4 text-orange">Balompie</h3>
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/balompie.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/st4.jpg" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/balompieFlyer.png" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-5"><button class="btn btn-luxury mx-auto" data-bs-dismiss="modal"><i class="fa fa-times me-2"></i> Close Project</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="portfolio-modal-9" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0"><button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body">
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="col-lg-10 mx-auto">
+                                <h3 class="mb-4 text-orange">Las Chamas</h3>
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/laschamasQR.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/st2.jpg" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/laschamas.png" class="img-fluid rounded mb-3">
+                                <img src="https://menutechdeveloper.github.io/bddImg/assets/img/chemasFlyer.png" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-5"><button class="btn btn-luxury mx-auto" data-bs-dismiss="modal"><i class="fa fa-times me-2"></i> Close Project</button></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-5" id="mainFooter">
+        <div class="container">
+            <img src="./assets/img/wisbelogo.png" alt="Wisbe" class="footer-logo mb-4 navbar-logo" style="width: 100px;">
+            <ul class="list-inline mb-4">
+                <li class="list-inline-item mx-3"><a class="footer-link" href="#">Web Design</a></li>
+                <li class="list-inline-item mx-3"><a class="footer-link" href="#">Development</a></li>
+                <li class="list-inline-item mx-3"><a class="footer-link" href="#">Hosting</a></li>
+            </ul>
+            <div class="social-links mb-4">
+                <a href="#" class="social-btn"><i class="fa fa-facebook"></i></a>
+                <a href="#" class="social-btn"><i class="fa fa-twitter"></i></a>
+                <a href="#" class="social-btn"><i class="fa fa-instagram"></i></a>
+            </div>
+            <p class="text-secondary small mb-0">Copyright © 2025 Wisbe. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({ duration: 1000, once: true });
+            
+            const navbar = document.getElementById('mainNav');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

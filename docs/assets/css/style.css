@@ -1,0 +1,58 @@
+.modal-body img {
+  width: 100%;
+}
+
+.btn-primary {
+  background-color: rgba(255,151,54,0.9);
+  border-color: rgba(255,151,54,0.9);
+}
+.portfolio {
+  margin-top: -150px;
+}
+
+.portfolio .portfolio-item .portfolio-item-caption {
+  transition: all ease .5s;
+  opacity: 0;
+  background-color: rgba(255,151,54,0.9);
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  background-color: rgba(255,151,54,0.9);
+  border-color: rgba(255,151,54,0.9);
+}
+
+.btn:hover {
+  color: var(--bs-btn-hover-color);
+  background-color: var(--bs-btn-hover-bg);
+  border-color: var(--bs-btn-hover-border-color);
+}
+
+a:focus, a:hover, a:active {
+  color: rgba(255,151,54,0.9);
+}
+
+.filtros {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 0;
+}
+
+@media (min-width: 1200px) {
+  .filtros {
+    max-width: 800px;
+  }
+}
+
+.filtros .filtro {
+  font-size: 16px;
+  background: #f27d51;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 0px;
+}
+
+.filtros .filtro:hover {
+  background: #f2bb51;
+}
+

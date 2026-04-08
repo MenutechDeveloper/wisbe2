@@ -140,9 +140,10 @@
             }
 
             // Fetch owner_id for this domain
+            let cleanDomain = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
             const { data: userData, error: userError } = await supabase.from('wisbe_users')
                 .select('id')
-                .ilike('domain', domain.trim())
+                .or(`domain.ilike.%${cleanDomain}%,domain.ilike.${domain.trim()}`)
                 .eq('role', 'gym-owner')
                 .maybeSingle();
 

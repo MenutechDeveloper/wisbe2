@@ -37,21 +37,26 @@
             const params = new URLSearchParams(window.location.search);
             const domain = params.get('domain');
 
-            let query = supabase.from('gym_trainers').select('*');
-
-            if (domain) {
-                const { data: userData } = await supabase
-                    .from('wisbe_users')
-                    .select('id')
-                    .ilike('domain', domain.trim())
-                    .maybeSingle();
-
-                if (userData) {
-                    query = query.eq('owner_id', userData.id);
-                }
+            if (!domain) {
+                container.innerHTML = '<div class="col-span-full py-20 text-center text-slate-500 font-bold"><i class="fas fa-plug mb-4 text-4xl block"></i>Módulo de Integración Wisbe.<br><span class="text-sm font-medium">Este contenido debe ser visualizado desde el dominio del cliente.</span></div>';
+                return;
             }
 
-            const { data, error } = await query.order('created_at', { ascending: false });
+            const { data: userData } = await supabase
+                .from('wisbe_users')
+                .select('id')
+                .ilike('domain', domain.trim())
+                .eq('role', 'gym-owner')
+                .maybeSingle();
+
+            if (!userData) {
+                container.innerHTML = '<div class="col-span-full py-20 text-center text-slate-400 font-medium italic">Gimnasio no encontrado para el dominio especificado.</div>';
+                return;
+            }
+
+            let query = supabase.from('gym_trainers').select('*').eq('owner_id', userData.id).order('created_at', { ascending: false });
+
+            const { data, error } = await query;
             if (error) return console.error(error);
 
             renderTrainers(data);

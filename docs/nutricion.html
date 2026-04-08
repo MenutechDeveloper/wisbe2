@@ -123,6 +123,17 @@
 
     <script type="module">
         import { supabase, renderNavbar } from './assets/js/utils.js';
+
+        // Manejador de errores global para visualización
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            console.error('[Wisbe Error]', msg, error);
+            const grid = document.getElementById('recipes-grid');
+            if (grid) {
+                grid.innerHTML = `<div class="col-span-full text-center text-red-500 py-20 font-bold">Error de Carga: ${msg}</div>`;
+            }
+            return false;
+        };
+
         renderNavbar();
 
         const grid = document.getElementById('recipes-grid');
@@ -140,43 +151,60 @@
             }
 
             console.log('[Wisbe] Buscando datos para el dominio:', domain);
+            grid.innerHTML = '<div class="col-span-full text-center text-slate-400 py-20"><i class="fas fa-sync fa-spin mb-4 text-4xl block"></i>Sincronizando con Wisbe...</div>';
 
-            // Fetch owner_id for this domain
-            let cleanDomain = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
-            const { data: userData, error: userError } = await supabase.from('wisbe_users')
-                .select('id, full_name')
-                .or(`domain.ilike.%${cleanDomain}%,domain.ilike.${domain.trim()}`)
-                .eq('role', 'gym-owner')
-                .limit(1);
+            try {
+                // Fetch owner_id for this domain
+                let cleanDomain = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
 
-            if (userError || !userData || userData.length === 0) {
-                console.error('[Wisbe] Error buscando usuario:', userError);
-                grid.innerHTML = '<div class="col-span-full text-center text-slate-500 font-bold py-20">Gimnasio no encontrado para el dominio especificado.</div>';
-                document.getElementById('results-count').innerText = '0 Opciones Maestro';
-                return;
+                // Intento 1: Búsqueda exacta
+                let { data: userData, error: userError } = await supabase.from('wisbe_users')
+                    .select('id, full_name')
+                    .ilike('domain', domain.trim())
+                    .eq('role', 'gym-owner')
+                    .maybeSingle();
+
+                // Intento 2: Búsqueda flexible si falla la exacta
+                if (!userData) {
+                    const { data: userDataFlex } = await supabase.from('wisbe_users')
+                        .select('id, full_name')
+                        .ilike('domain', `%${cleanDomain}%`)
+                        .eq('role', 'gym-owner')
+                        .limit(1);
+                    userData = userDataFlex ? userDataFlex[0] : null;
+                }
+
+                if (userError || !userData) {
+                    console.error('[Wisbe] Usuario no encontrado o error:', userError);
+                    grid.innerHTML = '<div class="col-span-full text-center text-slate-500 font-bold py-20">Gimnasio no encontrado o no configurado.<br><span class="text-xs font-medium">Asegúrate de que el dominio esté bien escrito en el administrador.</span></div>';
+                    document.getElementById('results-count').innerText = '0 Opciones Maestro';
+                    return;
+                }
+
+                console.log('[Wisbe] Usuario conectado:', userData.full_name);
+
+                const { data, error } = await supabase.from('gym_recipes').select('*').eq('owner_id', userData.id).order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('[Wisbe] Error cargando recetas:', error);
+                    grid.innerHTML = `<div class="col-span-full text-center text-red-500 py-20 font-bold">Error de conexión: ${error.message}</div>`;
+                    return;
+                }
+
+                allRecipes = data || [];
+                console.log('[Wisbe] Recetas encontradas:', allRecipes.length);
+
+                if (allRecipes.length === 0) {
+                    grid.innerHTML = '<div class="col-span-full text-center text-slate-400 py-20 italic">Aún no hay contenido publicado para este dominio.<br><span class="text-xs font-medium">Crea recetas desde wisbe.xyz para verlas aquí.</span></div>';
+                    document.getElementById('results-count').innerText = '0 Opciones Maestro';
+                    return;
+                }
+
+                filterRecipes();
+            } catch (err) {
+                console.error('[Wisbe Critical Error]', err);
+                grid.innerHTML = `<div class="col-span-full text-center text-red-500 py-20 font-bold">Error Crítico: ${err.message}</div>`;
             }
-
-            const user = userData[0];
-            console.log('[Wisbe] Usuario encontrado:', user.full_name);
-
-            let query = supabase.from('gym_recipes').select('*').eq('owner_id', user.id).order('created_at', { ascending: false });
-            const { data, error } = await query;
-
-            if (error) {
-                console.error('[Wisbe] Error cargando recetas:', error);
-                return;
-            }
-
-            allRecipes = data || [];
-            console.log('[Wisbe] Recetas cargadas:', allRecipes.length);
-
-            if (allRecipes.length === 0) {
-                grid.innerHTML = '<div class="col-span-full text-center text-slate-400 py-20 italic">Aún no se han publicado recetas para este gimnasio.</div>';
-                document.getElementById('results-count').innerText = '0 Opciones Maestro';
-                return;
-            }
-
-            filterRecipes();
         }
 
         function filterRecipes() {

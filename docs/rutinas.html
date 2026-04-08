@@ -41,6 +41,17 @@
 
     <script type="module">
         import { supabase, renderNavbar } from './assets/js/utils.js';
+
+        // Manejador de errores global para visualización
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            console.error('[Wisbe Error]', msg, error);
+            const container = document.getElementById('routines-container');
+            if (container) {
+                container.innerHTML = `<div class="col-span-full text-center text-red-500 py-20 font-bold">Error de Sistema: ${msg}</div>`;
+            }
+            return false;
+        };
+
         renderNavbar();
 
         let allRoutines = [];
@@ -56,41 +67,58 @@
             }
 
             console.log('[Wisbe] Buscando rutinas para el dominio:', domain);
+            container.innerHTML = '<div class="col-span-full py-20 text-center text-slate-400 font-medium"><i class="fas fa-sync fa-spin mb-4 text-4xl block"></i>Sincronizando planes...</div>';
 
-            let cleanDomain = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
-            const { data: userData, error: userError } = await supabase
-                .from('wisbe_users')
-                .select('id, full_name')
-                .or(`domain.ilike.%${cleanDomain}%,domain.ilike.${domain.trim()}`)
-                .eq('role', 'gym-owner')
-                .limit(1);
+            try {
+                let cleanDomain = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
 
-            if (userError || !userData || userData.length === 0) {
-                console.error('[Wisbe] Error buscando usuario:', userError);
-                container.innerHTML = '<div class="col-span-full py-20 text-center text-slate-400 font-medium">Gimnasio no encontrado para el dominio especificado.</div>';
-                return;
+                // Intento 1: Exacto
+                let { data: userData, error: userError } = await supabase.from('wisbe_users')
+                    .select('id, full_name')
+                    .ilike('domain', domain.trim())
+                    .eq('role', 'gym-owner')
+                    .maybeSingle();
+
+                // Intento 2: Flexible
+                if (!userData) {
+                    const { data: userDataFlex } = await supabase.from('wisbe_users')
+                        .select('id, full_name')
+                        .ilike('domain', `%${cleanDomain}%`)
+                        .eq('role', 'gym-owner')
+                        .limit(1);
+                    userData = userDataFlex ? userDataFlex[0] : null;
+                }
+
+                if (userError || !userData) {
+                    console.error('[Wisbe] Error buscando usuario:', userError);
+                    container.innerHTML = '<div class="col-span-full py-20 text-center text-slate-400 font-medium">Gimnasio no encontrado o no configurado correctamente.</div>';
+                    return;
+                }
+
+                console.log('[Wisbe] Usuario conectado:', userData.full_name);
+
+                let query = supabase.from('gym_routines').select('*').eq('owner_id', userData.id).order('created_at', { ascending: false });
+
+                const { data, error } = await query;
+                if (error) {
+                    console.error('[Wisbe] Error cargando rutinas:', error);
+                    container.innerHTML = `<div class="col-span-full py-20 text-center text-red-500 font-bold">Error de conexión: ${error.message}</div>`;
+                    return;
+                }
+
+                allRoutines = data || [];
+                console.log('[Wisbe] Rutinas cargadas:', allRoutines.length);
+
+                if (allRoutines.length === 0) {
+                    container.innerHTML = '<div class="col-span-full py-20 text-center text-slate-400 font-medium italic">Aún no se han definido planes de entrenamiento para este gimnasio.</div>';
+                    return;
+                }
+
+                renderRoutines(allRoutines);
+            } catch (err) {
+                console.error('[Wisbe Critical Error]', err);
+                container.innerHTML = `<div class="col-span-full py-20 text-center text-red-500 font-bold">Error Crítico: ${err.message}</div>`;
             }
-
-            const user = userData[0];
-            console.log('[Wisbe] Usuario encontrado:', user.full_name);
-
-            let query = supabase.from('gym_routines').select('*').eq('owner_id', user.id).order('created_at', { ascending: false });
-
-            const { data, error } = await query;
-            if (error) {
-                console.error('[Wisbe] Error cargando rutinas:', error);
-                return;
-            }
-
-            allRoutines = data || [];
-            console.log('[Wisbe] Rutinas cargadas:', allRoutines.length);
-
-            if (allRoutines.length === 0) {
-                container.innerHTML = '<div class="col-span-full py-20 text-center text-slate-400 font-medium italic">Aún no se han definido planes de entrenamiento para este gimnasio.</div>';
-                return;
-            }
-
-            renderRoutines(allRoutines);
         }
 
         function renderRoutines(routines) {

@@ -66,4 +66,22 @@
     } else {
         initWidgets();
     }
+
+    // MutationObserver para detectar widgets añadidos dinámicamente
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.addedNodes.length) {
+                initWidgets();
+            }
+        });
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    // Reintento de seguridad
+    setTimeout(initWidgets, 1000);
+    setTimeout(initWidgets, 3000);
 })();

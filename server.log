@@ -1,0 +1,6 @@
+127.0.0.1 - - [08/Apr/2026 22:14:02] "GET /widget_demo.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Apr/2026 22:14:02] "GET /widget.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Apr/2026 22:14:02] "GET /nutricion.html?domain=gympro.xyz&embedded=true HTTP/1.1" 200 -
+127.0.0.1 - - [08/Apr/2026 22:14:02] "GET /assets/css/styleGYM.css HTTP/1.1" 200 -
+127.0.0.1 - - [08/Apr/2026 22:14:02] "GET /assets/js/utils.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Apr/2026 22:14:02] "GET /assets/js/config.js HTTP/1.1" 200 -

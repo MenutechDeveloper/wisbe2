@@ -1,39 +1,36 @@
 EXPLICACIÓN DEL FUNCIONAMIENTO DEL WIDGET WISBE
 ==============================================
 
-¿Cómo se muestra la data y el diseño en el dominio del usuario?
---------------------------------------------------------------
+¿Cómo se muestra la data y el diseño en el sitio del cliente SIN ARCHIVOS adicionales?
+------------------------------------------------------------------------------------
 
-El sistema utiliza una arquitectura de "Iframe Dinámico". Esto significa que el código que pegas en tu sitio NO necesita contener todos los estilos y la lógica de datos, ya que estos residen de forma centralizada en wisbe.xyz.
+El sistema funciona mediante una arquitectura de "Inyección Centralizada". El cliente NO necesita tener nutricion.html, rutinas.html ni ningún otro archivo en su servidor. SOLO necesita el código:
 
-PROCESO PASO A PASO:
+   <div id="wisbe-nutricion" domain="gympro.xyz"></div>
+   <script src="https://wisbe.xyz/widget.js"></script>
 
-1. EL CONTENEDOR: Cuando pegas <div id="wisbe-nutricion" domain="tusitio.com"></div>, estás creando un espacio vacío.
+PROCESO INTERNO:
 
-2. EL SCRIPT (widget.js): Este script detecta ese <div>. Lee el atributo 'domain' y sabe que debe cargar el módulo de nutrición.
+1. CARGA REMOTA: El script 'widget.js' se carga desde los servidores de Wisbe (wisbe.xyz). Este script contiene toda la "inteligencia" para construir el widget.
 
-3. LA CARGA (Iframe): El script inyecta automáticamente un <iframe> dentro de tu <div>. Este iframe apunta a:
-   https://wisbe.xyz/nutricion.html?domain=tusitio.com&embedded=true
+2. DETECCIÓN: El script busca en el sitio del cliente el <div> con el ID correspondiente (ej. wisbe-nutricion).
 
-4. DISEÑO Y ESTILOS: Al cargar 'nutricion.html' dentro de tu sitio, se carga TODO el diseño, CSS de Tailwind, fuentes y scripts que ya tienes configurados en Wisbe. Por eso el diseño se ve EXACTAMENTE igual que en nutricion.html, porque técnicamente ES esa página mostrándose dentro de tu sitio.
+3. IDENTIFICACIÓN POR DOMINIO: El script lee el atributo 'domain="gympro.xyz"'. Este dominio es la CLAVE. No importa en qué sitio web esté pegado el código; el widget usará ese dominio para buscar en la base de datos de Wisbe qué recetas pertenecen a ese usuario específico.
 
-5. CONEXIÓN DE DATOS:
-   - nutricion.html lee el parámetro 'domain=tusitio.com' de la URL.
-   - Consulta a Supabase: "¿Quién es el dueño del dominio tusitio.com?".
-   - Supabase devuelve el ID del usuario.
-   - nutricion.html carga únicamente las recetas de ese usuario.
+4. DISEÑO "EMPAQUETADO": El script inyecta un <iframe> que carga la interfaz de Wisbe directamente desde wisbe.xyz.
+   - El cliente ve los estilos y el diseño "Luxury" porque el iframe está cargando la versión alojada en Wisbe.
+   - Todo el CSS de Tailwind, las fuentes y los íconos ya están dentro de esa página remota.
 
-¿POR QUÉ NO SE VE NADA EN TU COMPILADOR?
-----------------------------------------
+¿POR QUÉ ES MEJOR ASÍ?
+----------------------
 
-Si no se ve nada, generalmente se debe a una de estas razones:
+- Zero Mantenimiento para el Cliente: El cliente no tiene que actualizar archivos. Si tú cambias el diseño en wisbe.xyz, el sitio del cliente se actualiza AUTOMÁTICAMENTE.
+- Portabilidad Total: El código funciona en WordPress, Shopify, Wix, o un sitio HTML puro.
+- Seguridad: La lógica de conexión con Supabase se mantiene en Wisbe, no en el sitio del cliente.
 
-1. DOMINIO NO REGISTRADO: Si el dominio que pusiste en el código (ej. "gympro.xyz") no coincide EXACTAMENTE con el dominio que el usuario tiene registrado en su perfil de Wisbe (en la tabla wisbe_users), el sistema no encontrará recetas.
+TROUBLESHOOTING (Si no se ve nada):
+----------------------------------
 
-2. PROTOCOLO HTTP/HTTPS: El script intenta ser inteligente, pero asegúrate de que el dominio en Wisbe no tenga "https://" si en el código lo pusiste sin él. Lo ideal es que ambos sean solo "dominio.com".
-
-3. SCRIPTS BLOQUEADOS: Si usas un compilador online muy restrictivo, a veces bloquean la carga de Iframes externos. Prueba abriendo un archivo .html local en tu navegador.
-
-4. BASE_URL: widget.js detecta automáticamente dónde está alojado. Si lo estás probando localmente, intentará cargar los archivos desde tu servidor local.
-
-Cualquier edición que hagas en wisbe.xyz se reflejará INSTANTÁNEAMENTE en el widget porque el widget siempre carga la versión más reciente de tus archivos .html.
+1. CONSOLA DEL NAVEGADOR: Presiona F12 y ve a "Console". Si el dominio no existe en Wisbe, verás un error indicándolo.
+2. DOMINIO EXACTO: Asegúrate de que en el Administrador de Usuarios de Wisbe, el usuario tenga puesto EXACTAMENTE el mismo dominio que pusiste en el código (ej. si pusiste gympro.xyz, en el perfil no debe decir https://gympro.xyz).
+3. IFRAME BLOCKING: Algunos compiladores de código online (como el de la imagen que enviaste) bloquean la carga de sitios externos por seguridad. Prueba el código en un archivo .html real en tu computadora.

@@ -1,6 +1,8 @@
 (function() {
-    // Detectar automáticamente la base URL desde el script
+    // Priorizar Wisbe.xyz como BASE_URL pero permitir detección dinámica para testing
     let BASE_URL = 'https://wisbe.xyz';
+
+    // Intentar detectar si el script se está ejecutando desde otro origen (ej. localhost en desarrollo)
     const scriptTag = document.currentScript || (function() {
         const scripts = document.getElementsByTagName('script');
         for (let s of scripts) {
@@ -9,12 +11,11 @@
         return null;
     })();
 
-    if (scriptTag && scriptTag.src) {
+    if (scriptTag && scriptTag.src && !scriptTag.src.includes('wisbe.xyz')) {
         try {
             BASE_URL = new URL(scriptTag.src).origin;
-        } catch(e) {
-            console.warn('[Wisbe Widget] Fallback to default BASE_URL');
-        }
+            console.log('[Wisbe Widget] Custom BASE_URL detected:', BASE_URL);
+        } catch(e) {}
     }
 
     class WisbeWidget extends HTMLElement {
@@ -92,12 +93,23 @@
                 const showIframe = () => {
                     if (loader.parentNode) loader.remove();
                     iframe.style.opacity = '1';
+                    iframe.style.display = 'block';
                     console.log(`[Wisbe Widget] Modulo ${c.type} cargado correctamente.`);
                 };
 
                 iframe.onload = showIframe;
-                // Fallback por si el onload no dispara (ej. cache o error)
-                setTimeout(showIframe, 5000);
+                iframe.onerror = function() {
+                    console.error(`[Wisbe Widget] Error al cargar el modulo ${c.type}. Es posible que el origen esté bloqueado.`);
+                    loader.innerHTML = '<div style="color: red;">Error al cargar el contenido. Por favor, revisa la consola del navegador.</div>';
+                };
+
+                // Fallback por si el onload no dispara (ej. cache o error silencioso)
+                setTimeout(() => {
+                    if (iframe.style.opacity === '0') {
+                        console.warn('[Wisbe Widget] El iframe tarda demasiado en responder, forzando visualización...');
+                        showIframe();
+                    }
+                }, 6000);
 
                 el.appendChild(iframe);
                 el.dataset.initialized = 'true';

@@ -1,0 +1,39 @@
+EXPLICACIÓN DEL FUNCIONAMIENTO DEL WIDGET WISBE
+==============================================
+
+¿Cómo se muestra la data y el diseño en el dominio del usuario?
+--------------------------------------------------------------
+
+El sistema utiliza una arquitectura de "Iframe Dinámico". Esto significa que el código que pegas en tu sitio NO necesita contener todos los estilos y la lógica de datos, ya que estos residen de forma centralizada en wisbe.xyz.
+
+PROCESO PASO A PASO:
+
+1. EL CONTENEDOR: Cuando pegas <div id="wisbe-nutricion" domain="tusitio.com"></div>, estás creando un espacio vacío.
+
+2. EL SCRIPT (widget.js): Este script detecta ese <div>. Lee el atributo 'domain' y sabe que debe cargar el módulo de nutrición.
+
+3. LA CARGA (Iframe): El script inyecta automáticamente un <iframe> dentro de tu <div>. Este iframe apunta a:
+   https://wisbe.xyz/nutricion.html?domain=tusitio.com&embedded=true
+
+4. DISEÑO Y ESTILOS: Al cargar 'nutricion.html' dentro de tu sitio, se carga TODO el diseño, CSS de Tailwind, fuentes y scripts que ya tienes configurados en Wisbe. Por eso el diseño se ve EXACTAMENTE igual que en nutricion.html, porque técnicamente ES esa página mostrándose dentro de tu sitio.
+
+5. CONEXIÓN DE DATOS:
+   - nutricion.html lee el parámetro 'domain=tusitio.com' de la URL.
+   - Consulta a Supabase: "¿Quién es el dueño del dominio tusitio.com?".
+   - Supabase devuelve el ID del usuario.
+   - nutricion.html carga únicamente las recetas de ese usuario.
+
+¿POR QUÉ NO SE VE NADA EN TU COMPILADOR?
+----------------------------------------
+
+Si no se ve nada, generalmente se debe a una de estas razones:
+
+1. DOMINIO NO REGISTRADO: Si el dominio que pusiste en el código (ej. "gympro.xyz") no coincide EXACTAMENTE con el dominio que el usuario tiene registrado en su perfil de Wisbe (en la tabla wisbe_users), el sistema no encontrará recetas.
+
+2. PROTOCOLO HTTP/HTTPS: El script intenta ser inteligente, pero asegúrate de que el dominio en Wisbe no tenga "https://" si en el código lo pusiste sin él. Lo ideal es que ambos sean solo "dominio.com".
+
+3. SCRIPTS BLOQUEADOS: Si usas un compilador online muy restrictivo, a veces bloquean la carga de Iframes externos. Prueba abriendo un archivo .html local en tu navegador.
+
+4. BASE_URL: widget.js detecta automáticamente dónde está alojado. Si lo estás probando localmente, intentará cargar los archivos desde tu servidor local.
+
+Cualquier edición que hagas en wisbe.xyz se reflejará INSTANTÁNEAMENTE en el widget porque el widget siempre carga la versión más reciente de tus archivos .html.

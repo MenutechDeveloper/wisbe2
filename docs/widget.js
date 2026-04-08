@@ -62,21 +62,45 @@
                 const domain = el.getAttribute('domain') || window.location.hostname;
                 const height = el.getAttribute('height') || '1300px';
 
-                console.log(`[Wisbe Widget] Encontrado contenedor: ${c.id} para ${domain}`);
+                console.log(`[Wisbe Widget] Iniciando modulo: ${c.type} para el dominio: ${domain}`);
+
+                // Crear un div de carga temporal
+                const loader = document.createElement('div');
+                loader.className = 'wisbe-loader';
+                loader.innerHTML = `
+                    <div style="padding: 40px; text-align: center; font-family: sans-serif; color: #64748b; background: #f8fafc; border-radius: 20px; border: 2px dashed #e2e8f0;">
+                        <div style="margin-bottom: 10px; font-weight: bold;">Sincronizando con Wisbe.xyz...</div>
+                        <div style="font-size: 12px;">Cargando contenido para ${domain}</div>
+                    </div>
+                `;
+                el.appendChild(loader);
 
                 const iframe = document.createElement('iframe');
+                // IMPORTANTE: encodeURIComponent asegura que el dominio se pase correctamente aunque tenga caracteres especiales
                 iframe.src = `${BASE_URL}/${c.type}.html?domain=${encodeURIComponent(domain)}&embedded=true`;
                 iframe.style.width = '100%';
                 iframe.style.height = height;
                 iframe.style.border = 'none';
                 iframe.style.borderRadius = '20px';
                 iframe.style.overflow = 'hidden';
+                iframe.style.opacity = '0'; // Usar opacidad en lugar de display para asegurar disparo de eventos
+                iframe.style.transition = 'opacity 0.5s ease-in-out';
                 iframe.setAttribute('allow', 'autoplay; clipboard-write; encrypted-media; picture-in-picture');
                 iframe.setAttribute('loading', 'lazy');
 
+                // Mostrar iframe y quitar loader cuando esté listo
+                const showIframe = () => {
+                    if (loader.parentNode) loader.remove();
+                    iframe.style.opacity = '1';
+                    console.log(`[Wisbe Widget] Modulo ${c.type} cargado correctamente.`);
+                };
+
+                iframe.onload = showIframe;
+                // Fallback por si el onload no dispara (ej. cache o error)
+                setTimeout(showIframe, 5000);
+
                 el.appendChild(iframe);
                 el.dataset.initialized = 'true';
-                console.log(`[Wisbe Widget] Inyectado iframe en ${c.id}`);
             }
         });
     }

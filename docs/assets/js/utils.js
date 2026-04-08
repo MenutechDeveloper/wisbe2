@@ -1,8 +1,11 @@
 import CONFIG from './config.js';
 
 // Inicializar Supabase (usando la librería cargada vía CDN en el HTML)
-const { createClient } = window.supabase;
-export const supabase = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+if (!window.supabase) {
+    console.error('[Wisbe] Supabase CDN no detectado. Asegúrate de incluir el script de Supabase en el HTML.');
+}
+const { createClient } = window.supabase || {};
+export const supabase = createClient ? createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY) : null;
 
 /**
  * Helper para subir a Cloudinary

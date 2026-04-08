@@ -62,7 +62,7 @@
                 const domain = el.getAttribute('domain') || window.location.hostname;
                 const height = el.getAttribute('height') || '1300px';
 
-                console.log(`[Wisbe Widget] Initializing div: ${c.id} for ${domain}`);
+                console.log(`[Wisbe Widget] Encontrado contenedor: ${c.id} para ${domain}`);
 
                 const iframe = document.createElement('iframe');
                 iframe.src = `${BASE_URL}/${c.type}.html?domain=${encodeURIComponent(domain)}&embedded=true`;
@@ -76,31 +76,44 @@
 
                 el.appendChild(iframe);
                 el.dataset.initialized = 'true';
+                console.log(`[Wisbe Widget] Inyectado iframe en ${c.id}`);
             }
         });
     }
 
+    // Asegurar ejecución en múltiples estados de carga
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initWidgets);
     } else {
         initWidgets();
     }
 
-    // MutationObserver para detectar widgets añadidos dinámicamente
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.addedNodes.length) {
-                initWidgets();
-            }
+    window.addEventListener('load', initWidgets);
+
+    // MutationObserver con salvaguarda para document.body
+    function setupObserver() {
+        if (!document.body) {
+            setTimeout(setupObserver, 50);
+            return;
+        }
+
+        const observer = new MutationObserver((mutations) => {
+            let shouldInit = false;
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length) shouldInit = true;
+            });
+            if (shouldInit) initWidgets();
         });
-    });
 
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+    setupObserver();
 
-    // Reintento de seguridad
-    setTimeout(initWidgets, 1000);
-    setTimeout(initWidgets, 3000);
+    // Reintentos agresivos (múltiples disparos para asegurar captura del DOM)
+    [100, 500, 1000, 2000, 3000, 5000].forEach(delay => {
+        setTimeout(initWidgets, delay);
+    });
 })();

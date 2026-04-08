@@ -85,9 +85,21 @@
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Nombre de la Receta</label>
                                 <input type="text" id="title" required class="input" placeholder="Ej: Bowl de Avena con Frutos Rojos">
                             </div>
-                            <div>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
                                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Tipo de Dieta</label>
-                                <input type="text" id="diet_type" class="input" placeholder="Ej: Vegano, Proteico, Ayuno">
+                                    <input type="text" id="diet_type" class="input" placeholder="Ej: Vegano, Proteico">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Categoría</label>
+                                    <select id="category" class="input bg-white cursor-pointer">
+                                        <option value="Desayuno">Desayuno</option>
+                                        <option value="Almuerzo">Almuerzo</option>
+                                        <option value="Cena">Cena</option>
+                                        <option value="Postre Fitness">Postre</option>
+                                        <option value="Snack Proteico">Snack</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div class="grid grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
@@ -319,6 +331,7 @@
             document.getElementById('prep_time').value = r.prep_time;
             document.getElementById('difficulty').value = r.difficulty || 'Media';
             document.getElementById('diet_type').value = r.diet_type;
+            document.getElementById('category').value = r.category || 'Desayuno';
             document.getElementById('calories').value = r.calories;
             document.getElementById('protein').value = r.protein;
             document.getElementById('carbs').value = r.carbs;
@@ -353,6 +366,7 @@
                 prep_time: parseInt(document.getElementById('prep_time').value) || 0,
                 difficulty: document.getElementById('difficulty').value,
                 diet_type: document.getElementById('diet_type').value,
+                category: document.getElementById('category').value,
                 calories: parseInt(document.getElementById('calories').value) || 0,
                 protein: parseInt(document.getElementById('protein').value) || 0,
                 carbs: parseInt(document.getElementById('carbs').value) || 0,

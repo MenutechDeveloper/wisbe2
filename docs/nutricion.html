@@ -139,24 +139,43 @@
                 return;
             }
 
+            console.log('[Wisbe] Buscando datos para el dominio:', domain);
+
             // Fetch owner_id for this domain
             let cleanDomain = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
             const { data: userData, error: userError } = await supabase.from('wisbe_users')
-                .select('id')
+                .select('id, full_name')
                 .or(`domain.ilike.%${cleanDomain}%,domain.ilike.${domain.trim()}`)
                 .eq('role', 'gym-owner')
-                .maybeSingle();
+                .limit(1);
 
-            if (!userData) {
+            if (userError || !userData || userData.length === 0) {
+                console.error('[Wisbe] Error buscando usuario:', userError);
                 grid.innerHTML = '<div class="col-span-full text-center text-slate-500 font-bold py-20">Gimnasio no encontrado para el dominio especificado.</div>';
                 document.getElementById('results-count').innerText = '0 Opciones Maestro';
                 return;
             }
 
-            let query = supabase.from('gym_recipes').select('*').eq('owner_id', userData.id).order('created_at', { ascending: false });
+            const user = userData[0];
+            console.log('[Wisbe] Usuario encontrado:', user.full_name);
+
+            let query = supabase.from('gym_recipes').select('*').eq('owner_id', user.id).order('created_at', { ascending: false });
             const { data, error } = await query;
-            if (error) return;
-            allRecipes = data;
+
+            if (error) {
+                console.error('[Wisbe] Error cargando recetas:', error);
+                return;
+            }
+
+            allRecipes = data || [];
+            console.log('[Wisbe] Recetas cargadas:', allRecipes.length);
+
+            if (allRecipes.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center text-slate-400 py-20 italic">Aún no se han publicado recetas para este gimnasio.</div>';
+                document.getElementById('results-count').innerText = '0 Opciones Maestro';
+                return;
+            }
+
             filterRecipes();
         }
 

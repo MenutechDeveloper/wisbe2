@@ -105,6 +105,54 @@
                 </form>
             </div>
         </div>
+
+        <!-- Widget Section -->
+        <section class="mt-20">
+            <div class="flex items-center justify-between mb-10">
+                <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tight">Integración de Widget</h2>
+                <div class="h-px bg-slate-200 flex-grow ml-10"></div>
+            </div>
+
+            <div class="bg-white p-8 md:p-14 rounded-[40px] shadow-sm border border-slate-200">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
+                    <div class="animate-fade">
+                        <div class="inline-block px-4 py-1.5 bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest rounded-full mb-6">Instrucciones</div>
+                        <h4 class="text-2xl font-bold text-slate-900 mb-4 tracking-tight">Copia y pega el código</h4>
+                        <p class="text-slate-500 text-sm mb-12 leading-relaxed font-medium">Inserta tus módulos en cualquier sitio web utilizando estos fragmentos de código. Toda la configuración se sincroniza automáticamente.</p>
+
+                        <div class="space-y-10">
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">1. Script Global</label>
+                                <div class="bg-slate-900 rounded-2xl p-6 relative group border border-slate-800 shadow-2xl">
+                                    <code id="script-code" class="text-blue-400 font-mono text-xs block overflow-x-auto whitespace-nowrap">&lt;script src="https://wisbe.xyz/widget.js"&gt;&lt;/script&gt;</code>
+                                    <button onclick="copyToClipboard('script-code')" class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-all scale-125">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">2. Contenedor de Módulo</label>
+                                <div class="bg-slate-900 rounded-2xl p-6 relative group border border-slate-800 shadow-2xl">
+                                    <code id="widget-code" class="text-emerald-400 font-mono text-xs block overflow-x-auto whitespace-nowrap">&lt;div id="wisbe-rutinas" domain="Cargando..."&gt;&lt;/div&gt;</code>
+                                    <button onclick="copyToClipboard('widget-code')" class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-all scale-125">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 rounded-[40px] p-12 flex flex-col items-center justify-center text-center border border-dashed border-slate-300 relative group overflow-hidden">
+                        <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-40 transition-opacity"></div>
+                        <div class="w-24 h-24 bg-white rounded-[32px] shadow-sm flex items-center justify-center text-blue-600 text-4xl mb-8 relative z-10 border border-slate-100">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h5 class="font-black text-slate-900 text-2xl mb-3 tracking-tight uppercase relative z-10">Dominio de Origen</h5>
+                        <p id="user-domain" class="text-blue-600 font-mono font-black text-xl mb-6 relative z-10 tracking-tight uppercase">Cargando...</p>
+                        <p class="text-[10px] text-slate-400 max-w-xs leading-relaxed uppercase tracking-widest font-black relative z-10 px-4 py-2 bg-slate-100 rounded-lg">Sincronización Automática Activa</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <script type="module">
@@ -120,6 +168,15 @@
             currentUser = await Auth.checkAccess(['gym-admin', 'gym-owner']);
             if (!currentUser) return;
 
+            // Populate Widget Integration data
+            const domainText = currentUser.domain || 'SIN DOMINIO';
+            document.getElementById('user-domain').innerText = domainText;
+            if (currentUser.domain) {
+                document.getElementById('widget-code').innerText = `<div id="wisbe-rutinas" domain="${currentUser.domain}"></div>`;
+            } else {
+                document.getElementById('widget-code').innerText = 'ERROR: CONFIGURA TU DOMINIO';
+            }
+
             isAdmin = currentUser.role === 'gym-admin';
 
             if (isAdmin) {
@@ -128,6 +185,13 @@
 
             await loadRoutines();
         }
+
+        window.copyToClipboard = (id) => {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showPopup('¡Copiado!', 'El fragmento de código está listo para usar');
+            });
+        };
 
         async function loadRoutines() {
             let query = supabase.from('gym_routines').select('*');

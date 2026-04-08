@@ -55,26 +55,42 @@
                 return;
             }
 
+            console.log('[Wisbe] Buscando rutinas para el dominio:', domain);
+
             let cleanDomain = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
-            const { data: userData } = await supabase
+            const { data: userData, error: userError } = await supabase
                 .from('wisbe_users')
-                .select('id')
+                .select('id, full_name')
                 .or(`domain.ilike.%${cleanDomain}%,domain.ilike.${domain.trim()}`)
                 .eq('role', 'gym-owner')
-                .maybeSingle();
+                .limit(1);
 
-            if (!userData) {
+            if (userError || !userData || userData.length === 0) {
+                console.error('[Wisbe] Error buscando usuario:', userError);
                 container.innerHTML = '<div class="col-span-full py-20 text-center text-slate-400 font-medium">Gimnasio no encontrado para el dominio especificado.</div>';
                 return;
             }
 
-            let query = supabase.from('gym_routines').select('*').eq('owner_id', userData.id).order('created_at', { ascending: false });
+            const user = userData[0];
+            console.log('[Wisbe] Usuario encontrado:', user.full_name);
+
+            let query = supabase.from('gym_routines').select('*').eq('owner_id', user.id).order('created_at', { ascending: false });
 
             const { data, error } = await query;
-            if (error) return console.error(error);
+            if (error) {
+                console.error('[Wisbe] Error cargando rutinas:', error);
+                return;
+            }
 
-            allRoutines = data;
-            renderRoutines(data);
+            allRoutines = data || [];
+            console.log('[Wisbe] Rutinas cargadas:', allRoutines.length);
+
+            if (allRoutines.length === 0) {
+                container.innerHTML = '<div class="col-span-full py-20 text-center text-slate-400 font-medium italic">Aún no se han definido planes de entrenamiento para este gimnasio.</div>';
+                return;
+            }
+
+            renderRoutines(allRoutines);
         }
 
         function renderRoutines(routines) {

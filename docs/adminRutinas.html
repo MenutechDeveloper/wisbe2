@@ -172,9 +172,8 @@
             const domainText = currentUser.domain || 'SIN DOMINIO';
             document.getElementById('user-domain').innerText = domainText;
 
-            // Generate full script URL based on current location
-            const currentPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-            const scriptUrl = window.location.origin + currentPath + '/wisbeUI.js';
+            // Production Script URL
+            const scriptUrl = 'https://wisbe.xyz/wisbeUI.js';
             document.getElementById('script-code').innerText = `<script src="${scriptUrl}"></script>`;
 
             if (currentUser.domain) {

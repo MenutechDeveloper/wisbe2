@@ -10,32 +10,37 @@
     };
 
     // Lazy load Supabase if not present
-    let supabaseLoadingPromise = null;
     async function getSupabase() {
         if (window.supabase) return window.supabase;
-        if (supabaseLoadingPromise) return supabaseLoadingPromise;
 
-        supabaseLoadingPromise = new Promise((resolve) => {
-            const existingScript = document.querySelector('script[src*="supabase-js"]');
-            if (existingScript) {
-                if (window.supabase) resolve(window.supabase);
-                else {
-                    const checkInterval = setInterval(() => {
-                        if (window.supabase) {
-                            clearInterval(checkInterval);
-                            resolve(window.supabase);
-                        }
-                    }, 100);
-                }
+        return new Promise((resolve, reject) => {
+            if (window.supabase) return resolve(window.supabase);
+
+            // Evitar múltiples cargas concurrentes
+            const existing = document.querySelector('script[data-wisbe-loader]');
+            if (existing) {
+                const interval = setInterval(() => {
+                    if (window.supabase) {
+                        clearInterval(interval);
+                        resolve(window.supabase);
+                    }
+                }, 100);
+                // Timeout de seguridad
+                setTimeout(() => clearInterval(interval), 10000);
                 return;
             }
 
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-            script.onload = () => resolve(window.supabase);
+            script.setAttribute('data-wisbe-loader', 'true');
+            script.async = true;
+            script.onload = () => {
+                console.log('[WisbeUI] Supabase SDK loaded successfully');
+                resolve(window.supabase);
+            };
+            script.onerror = () => reject(new Error('Failed to load Supabase SDK from CDN'));
             document.head.appendChild(script);
         });
-        return supabaseLoadingPromise;
     }
 
     const SHARED_STYLES = `
@@ -66,18 +71,21 @@
 
         /* Loader & Errors */
         .wisbe-loader { padding: 100px 20px; text-align: center; color: var(--wisbe-slate-500); font-weight: bold; }
-        .wisbe-error { padding: 40px; text-align: center; color: #ef4444; background: #fef2f2; border-radius: 20px; }
+        .wisbe-error { padding: 40px; text-align: center; color: #ef4444; background: #fef2f2; border-radius: 20px; font-weight: 800; text-transform: uppercase; font-size: 12px; }
         .wisbe-empty { padding: 80px 20px; text-align: center; color: var(--wisbe-slate-400); font-style: italic; }
 
-        /* Robust Grid System */
+        /* Robust Grid System - Paridad con original */
         .wisbe-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: 1fr;
             gap: 2.5rem;
             width: 100%;
         }
+        @media (min-width: 640px) { .wisbe-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .wisbe-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1280px) { .wisbe-grid { grid-template-columns: repeat(4, 1fr); } }
 
-        /* Cards Luxury Design */
+        /* Cards Luxury Design - Square Images */
         .card {
             background: white;
             border-radius: 50px;
@@ -95,7 +103,13 @@
             box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
         }
 
-        .card-image-wrapper { height: 16rem; position: relative; overflow: hidden; background: var(--wisbe-slate-100); }
+        .card-image-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1; /* FORZAR CUADRADO */
+            position: relative;
+            overflow: hidden;
+            background: var(--wisbe-slate-100);
+        }
         .card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 1s; filter: grayscale(0.2); }
         .card:hover .card-image { transform: scale(1.25); filter: grayscale(0); }
 
@@ -233,7 +247,20 @@
         .exercise-video-btn:hover { background: var(--wisbe-blue); color: white; transform: scale(1.1); }
 
         /* Trainers Extras */
-        .trainer-avatar { width: 7rem; height: 7rem; border-radius: 9999px; border: 4px solid var(--wisbe-slate-50); overflow: hidden; margin-bottom: 2rem; background: var(--wisbe-slate-100); position: relative; transition: transform 0.5s; }
+        .trainer-avatar {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 9999px;
+            border: 4px solid var(--wisbe-slate-50);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background: var(--wisbe-slate-100);
+            position: relative;
+            transition: transform 0.5s;
+            max-width: 12rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
         .card:hover .trainer-avatar { transform: scale(1.05); }
         .trainer-specialty { font-size: 10px; font-weight: 900; color: var(--wisbe-blue); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; padding: 0.25rem 0.75rem; background: var(--wisbe-blue-light); border-radius: 9999px; display: inline-block; border: 1px solid #dbeafe; }
         .trainer-bio { font-size: 0.875rem; color: var(--wisbe-slate-500); margin-bottom: 2rem; line-height: 1.625; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -286,22 +313,29 @@
 
         async connectedCallback() {
             this.renderLoading();
-            const supabaseLib = await getSupabase();
-            this.supabase = supabaseLib.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+            console.log(`[WisbeUI] Loading widget: ${this.tagName.toLowerCase()} for ${this.getAttribute('domain')}`);
 
-            const domain = this.getAttribute('domain');
-            if (!domain) {
-                this.renderError('Atributo "domain" es requerido.');
-                return;
+            try {
+                const supabaseLib = await getSupabase();
+                this.supabase = supabaseLib.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+
+                const domain = this.getAttribute('domain');
+                if (!domain) {
+                    this.renderError('Dominio requerido: <wisbe-xxx domain="ejemplo.com">');
+                    return;
+                }
+
+                this.ownerId = await this.resolveOwner(domain);
+                if (!this.ownerId) {
+                    this.renderError('Dominio "' + domain + '" no registrado en Wisbe.');
+                    return;
+                }
+
+                this.fetchAndRender();
+            } catch (err) {
+                console.error('[WisbeUI] Critical Error:', err);
+                this.renderError('Error de conexión con el servidor.');
             }
-
-            this.ownerId = await this.resolveOwner(domain);
-            if (!this.ownerId) {
-                this.renderError('Gimnasio no encontrado o no configurado.');
-                return;
-            }
-
-            this.fetchAndRender();
         }
 
         async resolveOwner(domain) {
@@ -317,14 +351,19 @@
         renderLoading() {
             this.shadowRoot.innerHTML = `
                 <style>${SHARED_STYLES}</style>
-                <div class="wisbe-loader"><i class="fas fa-sync fa-spin"></i> Sincronizando con Wisbe.xyz...</div>
+                <div class="wisbe-loader"><i class="fas fa-sync fa-spin"></i> Sincronizando datos...</div>
             `;
         }
 
         renderError(msg) {
             this.shadowRoot.innerHTML = `
                 <style>${SHARED_STYLES}</style>
-                <div class="wisbe-error">${msg}</div>
+                <div class="wisbe-container">
+                    <div class="wisbe-error">
+                        <i class="fas fa-exclamation-triangle" style="display:block; font-size: 2rem; margin-bottom: 1rem;"></i>
+                        ${msg}
+                    </div>
+                </div>
             `;
         }
 
@@ -332,7 +371,7 @@
              this.shadowRoot.innerHTML = `
                 <style>${SHARED_STYLES}</style>
                 <div class="wisbe-container">
-                    <div class="wisbe-empty">Aún no hay contenido disponible para este gimnasio.</div>
+                    <div class="wisbe-empty">Aún no hay contenido publicado.</div>
                 </div>
             `;
         }
@@ -347,7 +386,7 @@
 
         async fetchAndRender() {
             const { data, error } = await this.supabase.from('gym_recipes').select('*').eq('owner_id', this.ownerId).order('created_at', { ascending: false });
-            if (error) return this.renderError('Error de conexión.');
+            if (error) return this.renderError('Error al obtener recetas.');
 
             this.allRecipes = data || [];
             if (this.allRecipes.length === 0) return this.renderEmpty();
@@ -404,7 +443,7 @@
         renderGrid(recipes) {
             const grid = this.shadowRoot.getElementById('recipes-grid');
             if (recipes.length === 0) {
-                grid.innerHTML = '<div class="wisbe-empty" style="grid-column: 1/-1">No se encontraron recetas con estos filtros.</div>';
+                grid.innerHTML = '<div class="wisbe-empty" style="grid-column: 1/-1">No se encontraron recetas.</div>';
                 return;
             }
 

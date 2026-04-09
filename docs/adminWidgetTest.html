@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wisbe - Laboratorio de Widgets</title>
+    <title>Wisbe - Laboratorio de Widgets (Custom Elements)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./assets/css/styleGYM.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,9 +13,9 @@
 
     <main class="max-w-6xl mx-auto">
         <header class="mb-12 text-center">
-            <div class="inline-block px-4 py-1 bg-blue-50 text-blue-600 text-xs font-black uppercase tracking-widest rounded-full mb-4">Herramienta de Diagnóstico</div>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase mb-4">Laboratorio de Widgets</h1>
-            <p class="text-slate-500 font-medium max-w-2xl mx-auto italic">Usa esta herramienta para confirmar que tu widget funciona correctamente antes de pegarlo en tu sitio.</p>
+            <div class="inline-block px-4 py-1 bg-blue-50 text-blue-600 text-xs font-black uppercase tracking-widest rounded-full mb-4">Herramienta de Diagnóstico (v2)</div>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase mb-4">Laboratorio de Custom Elements</h1>
+            <p class="text-slate-500 font-medium max-w-2xl mx-auto italic">Prueba los nuevos widgets nativos sin iframes. Toda la carga es directa y optimizada.</p>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -26,14 +26,13 @@
                     <div>
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Dominio a probar</label>
                         <input type="text" id="test-domain" class="input font-mono" placeholder="ej: gympro.xyz">
-                        <p class="text-[9px] text-slate-400 mt-2 uppercase font-bold tracking-tighter">Debe ser el mismo que configuraste en tu perfil.</p>
                     </div>
                     <div>
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Módulo</label>
                         <select id="test-module" class="input bg-white">
-                            <option value="nutricion">Nutrición</option>
-                            <option value="rutinas">Rutinas</option>
-                            <option value="entrenadores">Entrenadores</option>
+                            <option value="gymnutricion">Nutrición</option>
+                            <option value="gymrutinas">Rutinas</option>
+                            <option value="gymentrenadores">Entrenadores</option>
                         </select>
                     </div>
                     <button id="run-test" class="w-full btn btn-primary py-4 font-black uppercase tracking-widest text-xs shadow-xl shadow-blue-600/20">
@@ -54,7 +53,7 @@
                 </div>
             </div>
 
-            <!-- Preview Window (Simulating External Domain) -->
+            <!-- Preview Window -->
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-[40px] shadow-2xl border-4 border-slate-200 overflow-hidden min-h-[700px] flex flex-col">
                     <div class="bg-slate-100 px-6 py-3 flex items-center gap-3 border-b border-slate-200">
@@ -78,6 +77,8 @@
         </div>
     </main>
 
+    <!-- Cargamos wisbeUI globalmente para el lab -->
+    <script src="wisbeUI.js"></script>
     <script type="module">
         import { renderNavbar, Auth, showPopup } from './assets/js/utils.js';
 
@@ -91,7 +92,6 @@
 
             const runBtn = document.getElementById('run-test');
             runBtn.addEventListener('click', () => {
-                console.log('[Lab] Iniciando prueba...');
                 const domain = document.getElementById('test-domain').value.trim();
                 const module = document.getElementById('test-module').value;
                 const container = document.getElementById('test-container');
@@ -103,37 +103,25 @@
                     return;
                 }
 
-                // Generar snippet con URL absoluta para Wisbe
-                const snippet = `<div id="wisbe-${module}" domain="${domain}"></div>\n<script src="${window.location.origin}/widget.js"><\/script>`;
+                const snippet = `<script src="${window.location.origin}/wisbeUI.js"><\/script>\n<wisbe-${module} domain="${domain}"></wisbe-${module}>`;
                 codeDisplay.innerText = snippet;
                 copyBtn.classList.remove('hidden');
 
-                // Limpiar contenedor y preparar inyección
+                // Limpiar contenedor y preparar inyección nativa
                 container.innerHTML = `
                     <div style="margin-bottom: 24px; padding: 12px; background: #eff6ff; border-radius: 16px; font-size: 11px; color: #1e40af; font-weight: 800; text-align: center; border: 1px solid #bfdbfe; text-transform: uppercase; letter-spacing: 1px;">
-                        <i class="fas fa-robot mr-2"></i> Simulando Entorno Externo para: ${domain}
+                        <i class="fas fa-microchip mr-2"></i> Inyectando Custom Element Wisbe en entorno nativo
                     </div>
-                    <div id="wisbe-${module}" domain="${domain}"></div>
+                    <wisbe-${module} domain="${domain}"></wisbe-${module}>
                 `;
 
-                // Forzar carga/re-ejecución de widget.js
-                // Eliminamos cualquier script de widget previo para evitar conflictos en el mismo documento
-                const oldScript = document.getElementById('wisbe-tester-script');
-                if (oldScript) oldScript.remove();
-
-                const script = document.createElement('script');
-                script.id = 'wisbe-tester-script';
-                script.src = 'widget.js?t=' + Date.now();
-                document.body.appendChild(script);
-
-                console.log('[Lab] Widget inyectado correctamente.');
-                showPopup('Simulación en marcha', 'El widget se está conectando con Wisbe.xyz...');
+                showPopup('Prueba Iniciada', 'El componente se está renderizando nativamente sin iframes.');
             });
 
             document.getElementById('copy-snippet').onclick = () => {
                 const text = document.getElementById('generated-code').innerText;
                 navigator.clipboard.writeText(text).then(() => {
-                    showPopup('Copiado', 'El código está en tu portapapeles.');
+                    showPopup('Copiado', 'El código nativo está en tu portapapeles.');
                 });
             };
         }

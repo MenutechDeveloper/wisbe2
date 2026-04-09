@@ -111,7 +111,9 @@
                     return;
                 }
 
-                const snippet = `<script src="${window.location.origin}/wisbeUI.js"><\/script>\n<wisbe-${module} domain="${domain}"></wisbe-${module}>`;
+                const currentPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+                const scriptUrl = window.location.origin + currentPath + '/wisbeUI.js';
+                const snippet = `<script src="${scriptUrl}"><\/script>\n<wisbe-${module} domain="${domain}"></wisbe-${module}>`;
                 codeDisplay.innerText = snippet;
                 copyBtn.classList.remove('hidden');
 

@@ -214,7 +214,7 @@
 
         .n-modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem; }
         .n-modal-macros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; width: 100%; margin-right: 3rem; }
-        .n-macro-box { background: var(--wisbe-slate-50); padding: 1.5rem; rounded: 35px; border-radius: 35px; text-align: center; border: 1px solid var(--wisbe-slate-100); transition: all 0.3s; }
+        .n-macro-box { background: var(--wisbe-slate-50); padding: 1.5rem; border-radius: 35px; text-align: center; border: 1px solid var(--wisbe-slate-100); transition: all 0.3s; }
         .n-macro-box:hover { background: #f0fdf4; }
         .n-macro-val { display: block; font-size: 1.875rem; font-weight: 900; color: var(--wisbe-emerald); margin-bottom: 0.25rem; }
         .n-macro-val.dark { color: var(--wisbe-slate-800); }
@@ -296,28 +296,66 @@
         }
 
         async connectedCallback() {
+            console.log(`[WisbeUI] Inicializando componente: ${this.tagName}`);
             this.renderLoading();
             try {
                 const supabaseLib = await getSupabase();
                 this.supabase = supabaseLib.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
 
                 const domain = this.getAttribute('domain');
-                if (!domain) return this.renderError('Configuración requerida: atributo [domain] no encontrado.');
+                if (!domain) {
+                    console.error('[WisbeUI] Atributo "domain" faltante.');
+                    return this.renderError('Configuración requerida: atributo [domain] no encontrado.');
+                }
 
+                console.log(`[WisbeUI] Buscando datos para dominio: ${domain}`);
                 this.ownerId = await this.resolveOwner(domain);
-                if (!this.ownerId) return this.renderError('Dominio "' + domain + '" no reconocido por Wisbe.');
 
+                if (!this.ownerId) {
+                    console.warn(`[WisbeUI] Dominio "${domain}" no encontrado en Wisbe.`);
+                    return this.renderError(`Dominio "${domain}" no reconocido. Verifica la configuración en tu panel de Wisbe.`);
+                }
+
+                console.log(`[WisbeUI] Owner ID resuelto: ${this.ownerId}`);
                 this.loadData();
             } catch (err) {
+                console.error('[WisbeUI] Error crítico:', err);
                 this.renderError('Error de sincronización con la red Wisbe.');
             }
         }
 
         async resolveOwner(domain) {
-            const clean = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].toLowerCase();
-            let { data: user } = await this.supabase.from('wisbe_users').select('id').ilike('domain', domain.trim()).eq('role', 'gym-owner').maybeSingle();
+            const clean = domain.trim()
+                .replace(/^https?:\/\//, '')
+                .replace(/^www\./, '')
+                .split('/')[0]
+                .toLowerCase();
+
+            // 1. Intento exacto
+            let { data: user } = await this.supabase.from('wisbe_users')
+                .select('id')
+                .ilike('domain', domain.trim())
+                .eq('role', 'gym-owner')
+                .maybeSingle();
+
             if (user) return user.id;
-            let { data: users } = await this.supabase.from('wisbe_users').select('id').ilike('domain', `%${clean}%`).eq('role', 'gym-owner').limit(1);
+
+            // 2. Intento con el dominio limpio (sin www ni protocolo)
+            let { data: userClean } = await this.supabase.from('wisbe_users')
+                .select('id')
+                .ilike('domain', clean)
+                .eq('role', 'gym-owner')
+                .maybeSingle();
+
+            if (userClean) return userClean.id;
+
+            // 3. Intento parcial (búsqueda flexible)
+            let { data: users } = await this.supabase.from('wisbe_users')
+                .select('id')
+                .ilike('domain', `%${clean}%`)
+                .eq('role', 'gym-owner')
+                .limit(1);
+
             return users && users[0] ? users[0].id : null;
         }
 

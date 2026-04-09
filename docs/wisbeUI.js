@@ -1,6 +1,6 @@
 /**
  * WisbeUI.js - Sistema de Widgets mediante Custom Elements
- * Inspirado en la arquitectura TragaleroUI
+ * Diseño de Lujo - Sin Dependencias Externas de Renderizado (CSS Nativo)
  */
 
 (function() {
@@ -10,14 +10,32 @@
     };
 
     // Lazy load Supabase if not present
+    let supabaseLoadingPromise = null;
     async function getSupabase() {
         if (window.supabase) return window.supabase;
-        return new Promise((resolve) => {
+        if (supabaseLoadingPromise) return supabaseLoadingPromise;
+
+        supabaseLoadingPromise = new Promise((resolve) => {
+            const existingScript = document.querySelector('script[src*="supabase-js"]');
+            if (existingScript) {
+                if (window.supabase) resolve(window.supabase);
+                else {
+                    const checkInterval = setInterval(() => {
+                        if (window.supabase) {
+                            clearInterval(checkInterval);
+                            resolve(window.supabase);
+                        }
+                    }, 100);
+                }
+                return;
+            }
+
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
             script.onload = () => resolve(window.supabase);
             document.head.appendChild(script);
         });
+        return supabaseLoadingPromise;
     }
 
     const SHARED_STYLES = `
@@ -25,17 +43,238 @@
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
         :host {
-            display: block;
-            font-family: 'Raleway', sans-serif;
+            display: block !important;
+            width: 100% !important;
+            font-family: 'Raleway', 'Inter', -apple-system, sans-serif;
+            --wisbe-emerald: #059669;
+            --wisbe-emerald-light: #ecfdf5;
+            --wisbe-blue: #2563eb;
+            --wisbe-blue-light: #eff6ff;
+            --wisbe-slate-950: #020617;
+            --wisbe-slate-900: #0f172a;
+            --wisbe-slate-800: #1e293b;
+            --wisbe-slate-500: #64748b;
+            --wisbe-slate-400: #94a3b8;
+            --wisbe-slate-200: #e2e8f0;
+            --wisbe-slate-100: #f1f5f9;
+            --wisbe-slate-50: #f8fafc;
         }
 
-        .wisbe-loader { padding: 100px 20px; text-align: center; color: #64748b; font-weight: bold; font-family: 'Raleway', sans-serif; }
-        .wisbe-error { padding: 40px; text-align: center; color: #ef4444; background: #fef2f2; border-radius: 20px; font-family: 'Raleway', sans-serif; }
+        * { box-sizing: border-box; }
 
-        /* Animation Utility */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .wisbe-container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
+
+        /* Loader & Errors */
+        .wisbe-loader { padding: 100px 20px; text-align: center; color: var(--wisbe-slate-500); font-weight: bold; }
+        .wisbe-error { padding: 40px; text-align: center; color: #ef4444; background: #fef2f2; border-radius: 20px; }
+        .wisbe-empty { padding: 80px 20px; text-align: center; color: var(--wisbe-slate-400); font-style: italic; }
+
+        /* Robust Grid System */
+        .wisbe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2.5rem;
+            width: 100%;
+        }
+
+        /* Cards Luxury Design */
+        .card {
+            background: white;
+            border-radius: 50px;
+            border: 1px solid var(--wisbe-slate-50);
+            overflow: hidden;
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+
+        .card-image-wrapper { height: 16rem; position: relative; overflow: hidden; background: var(--wisbe-slate-100); }
+        .card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 1s; filter: grayscale(0.2); }
+        .card:hover .card-image { transform: scale(1.25); filter: grayscale(0); }
+
+        .badge {
+            position: absolute; top: 1.5rem; left: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--wisbe-emerald);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            z-index: 10;
+        }
+
+        .card-content { padding: 2.5rem; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-size: 1.5rem; font-weight: 900; color: var(--wisbe-slate-900); margin-bottom: 1.5rem; letter-spacing: -0.025em; line-height: 1.2; }
+
+        .card-stats {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2.5rem; padding: 1.5rem 0;
+            border-top: 1px solid var(--wisbe-slate-100); border-bottom: 1px solid var(--wisbe-slate-100);
+            font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--wisbe-slate-400);
+            gap: 1rem;
+        }
+        .stat-item { text-align: center; flex: 1; }
+        .stat-value { display: block; font-size: 1.5rem; font-weight: 900; color: var(--wisbe-slate-900); margin-bottom: 0.25rem; }
+        .stat-value.emerald { color: var(--wisbe-emerald); }
+
+        .btn-primary {
+            width: 100%; padding: 1.25rem 0.5rem; background: var(--wisbe-slate-900); color: white;
+            font-weight: 900; border-radius: 1.5rem; border: none; cursor: pointer;
+            transition: all 0.3s; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            display: block; margin-top: auto;
+            text-align: center; text-decoration: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-primary:hover { background: var(--wisbe-emerald); box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.2); }
+
+        /* Filters */
+        .filters-container {
+            background: white; border-radius: 40px; border: 1px solid var(--wisbe-slate-100);
+            padding: 2rem; margin-bottom: 5rem;
+            display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; justify-content: space-between;
+        }
+        .filter-group { display: flex; flex-wrap: wrap; gap: 1rem; }
+        .filter-select {
+            background: var(--wisbe-slate-50); padding: 0.75rem 2rem; border-radius: 1rem;
+            font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--wisbe-slate-500);
+            border: 1px solid transparent; outline: none; transition: all 0.3s; cursor: pointer;
+        }
+        .filter-select:focus { border-color: var(--wisbe-emerald); background: white; }
+        .results-count { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--wisbe-slate-400); }
+
+        /* Modal Ultra Luxury */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(2, 6, 23, 0.85); z-index: 10000;
+            display: flex; align-items: center; justify-content: center; padding: 2rem; backdrop-filter: blur(12px);
+        }
+        .modal-container {
+            background: white; width: 100%; max-width: 1152px; max-height: 90vh;
+            border-radius: 60px; overflow: hidden; display: flex; flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        @media (min-width: 1280px) { .modal-container { flex-direction: row; } }
+
+        .modal-aside { position: relative; width: 100%; height: 20rem; flex-shrink: 0; }
+        @media (min-width: 1280px) { .modal-aside { width: 41.666667%; height: auto; } }
+        .modal-aside-img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-aside-overlay {
+            position: absolute; inset: 0; background: linear-gradient(to top, black, transparent);
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 3rem;
+        }
+        .modal-aside-badge {
+            background: var(--wisbe-emerald); color: white; padding: 0.5rem 1.25rem; border-radius: 1rem;
+            font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em; width: fit-content; margin-bottom: 1rem;
+        }
+        .modal-aside-title { font-size: 3rem; font-weight: 900; color: white; line-height: 0.9; letter-spacing: -0.05em; margin: 0; }
+
+        .modal-main { width: 100%; padding: 2rem; overflow-y: auto; background: white; display: flex; flex-direction: column; flex-grow: 1; }
+        @media (min-width: 1280px) { .modal-main { width: 58.333333%; padding: 4rem; } }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem; }
+        .modal-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; margin-right: 1.5rem; }
+        @media (min-width: 640px) { .modal-stats-grid { grid-template-columns: repeat(4, 1fr); } }
+
+        .modal-stat-card {
+            background: var(--wisbe-slate-50); padding: 1.5rem; border-radius: 35px; text-align: center; border: 1px solid var(--wisbe-slate-100); transition: all 0.3s;
+        }
+        .modal-stat-card:hover { background: var(--wisbe-emerald-light); }
+        .modal-stat-card .val { display: block; font-size: 1.875rem; font-weight: 900; color: var(--wisbe-emerald); transition: transform 0.3s; }
+        .modal-stat-card:hover .val { transform: scale(1.1); }
+        .modal-stat-card .label { font-size: 8px; font-weight: 900; color: var(--wisbe-slate-400); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        .close-btn { color: var(--wisbe-slate-400); font-size: 1.5rem; background: var(--wisbe-slate-50); width: 3.5rem; height: 3.5rem; border-radius: 9999px; border: none; cursor: pointer; transition: all 0.3s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .close-btn:hover { background: #fee2e2; color: #ef4444; transform: rotate(90deg); }
+
+        .modal-container-full { max-height: 95vh; overflow-y: auto; }
+        @media (min-width: 1280px) { .modal-container-full { overflow-y: hidden; } }
+
+        .modal-section-title { font-size: 1.25rem; font-weight: 900; color: var(--wisbe-slate-800); margin-bottom: 1.5rem; display: flex; align-items: center; text-transform: uppercase; letter-spacing: -0.025em; }
+        .num-tag { width: 2rem; height: 2rem; background: var(--wisbe-emerald-light); color: var(--wisbe-emerald); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; margin-right: 0.75rem; font-weight: 900; flex-shrink: 0; }
+
+        .modal-ingredients { color: var(--wisbe-slate-600); line-height: 2; white-space: pre-wrap; padding-left: 1.5rem; border-left: 2px solid var(--wisbe-emerald-light); font-size: 0.875rem; font-style: italic; }
+        .modal-bio-data { display: flex; flex-direction: column; gap: 1rem; }
+        .bio-item { background: var(--wisbe-slate-50); padding: 1rem; border-radius: 1rem; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 900; text-transform: uppercase; color: var(--wisbe-slate-400); border: 1px solid var(--wisbe-slate-100); }
+        .bio-item span:last-child { color: var(--wisbe-slate-900); }
+        .bio-item .highlight { color: var(--wisbe-emerald); }
+
+        .modal-instructions { color: var(--wisbe-slate-600); line-height: 1.625; white-space: pre-wrap; font-size: 0.875rem; background: var(--wisbe-slate-50); padding: 2.5rem; border-radius: 40px; border: 2px dashed var(--wisbe-slate-100); }
+
+        /* Routines Extras */
+        .routine-icon-box { width: 4rem; height: 4rem; background: var(--wisbe-blue-light); color: var(--wisbe-blue); border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 2rem; transition: all 0.5s; border: 1px solid #dbeafe; }
+        .card:hover .routine-icon-box { background: var(--wisbe-blue); color: white; transform: scale(1.1); }
+        .routine-badges { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .routine-badge { padding: 0.375rem 1rem; border-radius: 0.5rem; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border: 1px solid var(--wisbe-slate-100); }
+        .routine-badge.difficulty { background: var(--wisbe-slate-50); color: var(--wisbe-slate-400); }
+        .routine-badge.duration { background: var(--wisbe-blue-light); color: var(--wisbe-blue); border-color: #dbeafe; }
+
+        .day-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+        .day-tag { display: inline-block; padding: 0.625rem 1.75rem; background: var(--wisbe-slate-50); color: var(--wisbe-slate-900); border-radius: 9999px; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid var(--wisbe-slate-200); }
+        .day-line { flex-grow: 1; h-px: 1px; background: var(--wisbe-slate-100); }
+
+        .exercise-card { padding: 1.5rem; background: var(--wisbe-slate-50); border-radius: 20px; border: 1px solid var(--wisbe-slate-200); transition: all 0.3s; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+        .exercise-card:hover { border-color: var(--wisbe-blue); background: white; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
+        .exercise-name { font-weight: 900; color: var(--wisbe-slate-900); font-size: 0.875rem; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: -0.01em; }
+        .exercise-meta { display: flex; gap: 0.5rem; font-size: 9px; font-weight: 900; color: var(--wisbe-slate-400); text-transform: uppercase; letter-spacing: 0.1em; }
+        .exercise-meta .highlight { color: var(--wisbe-blue); }
+        .exercise-video-btn { width: 2.5rem; height: 2.5rem; background: white; color: var(--wisbe-blue); border-radius: 9999px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--wisbe-slate-200); transition: all 0.3s; text-decoration: none; }
+        .exercise-video-btn:hover { background: var(--wisbe-blue); color: white; transform: scale(1.1); }
+
+        /* Trainers Extras */
+        .trainer-avatar { width: 7rem; height: 7rem; border-radius: 9999px; border: 4px solid var(--wisbe-slate-50); overflow: hidden; margin-bottom: 2rem; background: var(--wisbe-slate-100); position: relative; transition: transform 0.5s; }
+        .card:hover .trainer-avatar { transform: scale(1.05); }
+        .trainer-specialty { font-size: 10px; font-weight: 900; color: var(--wisbe-blue); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; padding: 0.25rem 0.75rem; background: var(--wisbe-blue-light); border-radius: 9999px; display: inline-block; border: 1px solid #dbeafe; }
+        .trainer-bio { font-size: 0.875rem; color: var(--wisbe-slate-500); margin-bottom: 2rem; line-height: 1.625; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .trainer-footer { border-top: 1px solid var(--wisbe-slate-100); padding-top: 1.5rem; width: 100%; display: flex; justify-content: center; gap: 0.75rem; margin-top: auto; }
+        .social-link { width: 3rem; height: 3rem; border-radius: 0.75rem; background: var(--wisbe-slate-50); color: var(--wisbe-slate-400); display: flex; align-items: center; justify-content: center; font-size: 1.125rem; transition: all 0.3s; text-decoration: none; border: 1px solid var(--wisbe-slate-100); }
+        .social-link.wa-btn { flex-grow: 1; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; background: var(--wisbe-blue); color: white; border: none; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .social-link.wa-btn:hover { background: #10b981; transform: translateY(-2px); }
+        .social-link.ig:hover { background: white; color: #ec4899; border-color: #f9a8d4; transform: translateY(-2px); }
+
+        /* Utils */
         .animate-fade-in { animation: fadeIn 0.8s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden { display: none !important; }
+
+        .grid-layout { display: flex; flex-direction: column; gap: 4rem; }
     `;
+
+    // --- UTILS ---
+    function formatList(data) {
+        if (!data) return "";
+        try {
+            const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+            if (Array.isArray(parsed)) {
+                return parsed.map(item => typeof item === 'object' ? JSON.stringify(item) : item).join('\n');
+            }
+            return parsed;
+        } catch(e) {
+            return data;
+        }
+    }
+
+    function ensureParsed(data) {
+        if (!data) return [];
+        try {
+            const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+            return Array.isArray(parsed) ? parsed : [];
+        } catch(e) {
+            console.error("[Wisbe] Parse error:", e);
+            return [];
+        }
+    }
 
     class WisbeBaseWidget extends HTMLElement {
         constructor() {
@@ -67,12 +306,8 @@
 
         async resolveOwner(domain) {
             let cleanDomain = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
-
-            // Exact match
             let { data: user } = await this.supabase.from('wisbe_users').select('id').ilike('domain', domain.trim()).eq('role', 'gym-owner').maybeSingle();
-
             if (!user) {
-                // Flex match
                 let { data: users } = await this.supabase.from('wisbe_users').select('id').ilike('domain', `%${cleanDomain}%`).eq('role', 'gym-owner').limit(1);
                 user = users ? users[0] : null;
             }
@@ -81,7 +316,6 @@
 
         renderLoading() {
             this.shadowRoot.innerHTML = `
-                <script src="https://cdn.tailwindcss.com"></script>
                 <style>${SHARED_STYLES}</style>
                 <div class="wisbe-loader"><i class="fas fa-sync fa-spin"></i> Sincronizando con Wisbe.xyz...</div>
             `;
@@ -89,9 +323,17 @@
 
         renderError(msg) {
             this.shadowRoot.innerHTML = `
-                <script src="https://cdn.tailwindcss.com"></script>
                 <style>${SHARED_STYLES}</style>
                 <div class="wisbe-error">${msg}</div>
+            `;
+        }
+
+        renderEmpty() {
+             this.shadowRoot.innerHTML = `
+                <style>${SHARED_STYLES}</style>
+                <div class="wisbe-container">
+                    <div class="wisbe-empty">Aún no hay contenido disponible para este gimnasio.</div>
+                </div>
             `;
         }
     }
@@ -108,19 +350,19 @@
             if (error) return this.renderError('Error de conexión.');
 
             this.allRecipes = data || [];
+            if (this.allRecipes.length === 0) return this.renderEmpty();
+
             this.renderLayout();
             this.filterRecipes();
         }
 
         renderLayout() {
             this.shadowRoot.innerHTML = `
-                <script src="https://cdn.tailwindcss.com"></script>
                 <style>${SHARED_STYLES}</style>
-                <div class="max-w-[1400px] mx-auto p-5 font-['Raleway']">
-                    <!-- Advanced Filters -->
-                    <div class="bg-white rounded-[40px] shadow-sm border border-slate-100 p-8 mb-20 flex flex-wrap gap-6 items-center justify-between">
-                        <div class="flex flex-wrap gap-4">
-                            <select id="diet-filter" class="bg-slate-50 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-500 border-none focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
+                <div class="wisbe-container">
+                    <div class="filters-container">
+                        <div class="filter-group">
+                            <select id="diet-filter" class="filter-select">
                                 <option value="All">Dieta: Todas</option>
                                 <option value="Keto">Keto</option>
                                 <option value="Vegana">Vegana</option>
@@ -128,7 +370,7 @@
                                 <option value="Sin Gluten">Sin Gluten</option>
                                 <option value="Equilibrada">Equilibrada</option>
                             </select>
-                            <select id="cat-filter" class="bg-slate-50 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-500 border-none focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
+                            <select id="cat-filter" class="filter-select">
                                 <option value="All">Categoría: Todas</option>
                                 <option value="Desayuno">Desayuno</option>
                                 <option value="Almuerzo">Almuerzo</option>
@@ -137,13 +379,14 @@
                                 <option value="Snack Proteico">Snack</option>
                             </select>
                         </div>
-                        <div id="recipe-count" class="text-[10px] font-black uppercase tracking-widest text-slate-400">0 Opciones Maestro</div>
+                        <div id="recipe-count" class="results-count">0 Opciones Maestro</div>
                     </div>
 
-                    <div id="recipes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+                    <div id="recipes-grid" class="wisbe-grid">
                         <!-- Grid content -->
                     </div>
                 </div>
+                <div id="modal-host"></div>
             `;
 
             this.shadowRoot.getElementById('diet-filter').addEventListener('change', () => this.filterRecipes());
@@ -153,128 +396,96 @@
         filterRecipes() {
             const diet = this.shadowRoot.getElementById('diet-filter').value;
             const cat = this.shadowRoot.getElementById('cat-filter').value;
-
-            const filtered = this.allRecipes.filter(r => {
-                return (diet === 'All' || r.diet_type === diet) &&
-                       (cat === 'All' || r.category === cat);
-            });
-
+            const filtered = this.allRecipes.filter(r => (diet === 'All' || r.diet_type === diet) && (cat === 'All' || r.category === cat));
             this.shadowRoot.getElementById('recipe-count').innerText = `${filtered.length} Opciones Maestro`;
             this.renderGrid(filtered);
         }
 
         renderGrid(recipes) {
             const grid = this.shadowRoot.getElementById('recipes-grid');
+            if (recipes.length === 0) {
+                grid.innerHTML = '<div class="wisbe-empty" style="grid-column: 1/-1">No se encontraron recetas con estos filtros.</div>';
+                return;
+            }
+
             grid.innerHTML = recipes.map((r, index) => `
-                <div class="bg-white rounded-[50px] shadow-sm border border-slate-50 overflow-hidden group hover:shadow-2xl hover:-translate-y-3 transition-all duration-700 animate-fade-in">
-                    <div class="h-64 relative overflow-hidden bg-slate-200">
-                        <img src="${r.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600'}"
-                             class="w-full h-full object-cover group-hover:scale-125 transition duration-1000 grayscale-[0.2] group-hover:grayscale-0">
-                        <div class="absolute top-6 left-6">
-                            <span class="bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest text-emerald-600 shadow-2xl">${r.category}</span>
-                        </div>
+                <div class="card animate-fade-in" style="animation-delay: ${index * 0.1}s">
+                    <div class="card-image-wrapper">
+                        <img src="${r.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600'}" class="card-image">
+                        <span class="badge">${r.category}</span>
                     </div>
-                    <div class="p-10">
-                        <h3 class="text-2xl font-black text-slate-800 mb-6 tracking-tight truncate">${r.title}</h3>
-                        <div class="flex justify-between items-center mb-10 border-t border-b border-slate-50 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                            <div class="text-center">
-                                <span class="block text-2xl font-black text-emerald-600 mb-1">${r.calories || 0}</span>
+                    <div class="card-content">
+                        <h3 class="card-title">${r.title}</h3>
+                        <div class="card-stats">
+                            <div class="stat-item">
+                                <span class="stat-value emerald">${r.calories || 0}</span>
                                 <span>Kcal</span>
                             </div>
-                            <div class="text-center">
-                                <span class="block text-2xl font-black text-slate-800 mb-1">${r.protein || 0}g</span>
+                            <div class="stat-item">
+                                <span class="stat-value">${r.protein || 0}g</span>
                                 <span>Prote</span>
                             </div>
                         </div>
-                        <button class="recipe-btn w-full py-5 bg-slate-900 hover:bg-emerald-600 text-white font-black rounded-3xl transition-all shadow-xl hover:shadow-emerald-200 uppercase tracking-widest text-xs" data-index="${index}">
-                            Receta Master
-                        </button>
+                        <button class="btn-primary recipe-btn" data-id="${r.id}">Receta Master</button>
                     </div>
                 </div>
             `).join('');
 
             grid.querySelectorAll('.recipe-btn').forEach(btn => {
                 btn.onclick = () => {
-                    const idx = btn.getAttribute('data-index');
-                    this.openModal(recipes[idx]);
+                    const recipe = recipes.find(rec => rec.id == btn.dataset.id);
+                    this.openModal(recipe);
                 };
             });
         }
 
         openModal(r) {
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position:fixed; inset:0; background:rgba(15, 23, 42, 0.95); z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(24px);';
-            modal.innerHTML = `
-                <script src="https://cdn.tailwindcss.com"></script>
-                <div class="bg-white w-full max-w-6xl max-h-[95vh] rounded-[60px] overflow-hidden shadow-2xl flex flex-col xl:flex-row border border-white/10 animate-fade-in font-['Raleway']">
-                    <div class="xl:w-5/12 h-80 xl:h-auto relative">
-                        <img src="${r.image_url}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-12">
-                            <span class="bg-emerald-500 text-white text-[10px] font-black uppercase tracking-[0.2em] px-5 py-2 rounded-2xl w-fit shadow-xl shadow-emerald-900/40 mb-4">${r.category}</span>
-                            <h2 class="text-5xl font-black text-white leading-[0.9] tracking-tighter">${r.title}</h2>
-                        </div>
-                    </div>
-                    <div class="xl:w-7/12 p-8 xl:p-16 overflow-y-auto bg-white flex flex-col">
-                        <div class="flex justify-between items-start mb-12">
-                            <div class="grid grid-cols-4 gap-4 w-full mr-12">
-                                <div class="bg-slate-50 p-6 rounded-[35px] text-center border border-slate-100 transition-all hover:bg-emerald-50 group">
-                                    <span class="block text-3xl font-black text-emerald-600 group-hover:scale-110 transition-transform">${r.calories || 0}</span>
-                                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Kcal</span>
-                                </div>
-                                <div class="bg-slate-50 p-6 rounded-[35px] text-center border border-slate-100 transition-all hover:bg-emerald-50 group">
-                                    <span class="block text-3xl font-black text-slate-800 group-hover:scale-110 transition-transform">${r.protein || 0}</span>
-                                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Proteínas</span>
-                                </div>
-                                <div class="bg-slate-50 p-6 rounded-[35px] text-center border border-slate-100 transition-all hover:bg-emerald-50 group">
-                                    <span class="block text-3xl font-black text-slate-800 group-hover:scale-110 transition-transform">${r.carbs || 0}</span>
-                                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Carbs</span>
-                                </div>
-                                <div class="bg-slate-50 p-6 rounded-[35px] text-center border border-slate-100 transition-all hover:bg-emerald-50 group">
-                                    <span class="block text-3xl font-black text-slate-800 group-hover:scale-110 transition-transform">${r.fats || 0}</span>
-                                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Grasas</span>
-                                </div>
+            const host = this.shadowRoot.getElementById('modal-host');
+            host.innerHTML = `
+                <div class="modal-overlay">
+                    <div class="modal-container animate-fade-in">
+                        <div class="modal-aside">
+                            <img src="${r.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800'}" class="modal-aside-img">
+                            <div class="modal-aside-overlay">
+                                <span class="modal-aside-badge">${r.category}</span>
+                                <h2 class="modal-aside-title">${r.title}</h2>
                             </div>
-                            <button class="close-btn text-slate-200 hover:text-emerald-500 transition-all text-3xl"><i class="fas fa-times-circle"></i></button>
                         </div>
-
-                        <div class="space-y-16">
-                            <div class="grid md:grid-cols-2 gap-12">
-                                <div>
-                                    <h4 class="text-xl font-black text-slate-800 mb-6 flex items-center uppercase tracking-tighter">
-                                        <span class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xs mr-3 font-black">01</span> Ingredientes
-                                    </h4>
-                                    <div class="text-slate-600 leading-loose whitespace-pre-wrap pl-6 border-l-2 border-emerald-50 text-sm italic">${Array.isArray(r.ingredients) ? r.ingredients.join('\n') : (r.ingredients || '')}</div>
+                        <div class="modal-main">
+                            <div class="modal-header">
+                                <div class="modal-stats-grid">
+                                    <div class="modal-stat-card"><span class="val">${r.calories || 0}</span><span class="label">Kcal</span></div>
+                                    <div class="modal-stat-card"><span class="val" style="color:var(--wisbe-slate-900)">${r.protein || 0}</span><span class="label">Proteínas</span></div>
+                                    <div class="modal-stat-card"><span class="val" style="color:var(--wisbe-slate-900)">${r.carbs || 0}</span><span class="label">Carbs</span></div>
+                                    <div class="modal-stat-card"><span class="val" style="color:var(--wisbe-slate-900)">${r.fats || 0}</span><span class="label">Grasas</span></div>
                                 </div>
-                                <div>
-                                    <h4 class="text-xl font-black text-slate-800 mb-6 flex items-center uppercase tracking-tighter">
-                                        <span class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xs mr-3 font-black">02</span> Bio-Datos
-                                    </h4>
-                                    <div class="space-y-4">
-                                        <div class="bg-slate-50 p-4 rounded-2xl flex justify-between items-center text-xs font-bold uppercase tracking-widest text-slate-400 border border-slate-100">
-                                            <span>⏱ Tiempo</span> <span class="text-slate-900 font-black">${r.prep_time || '20 min'}</span>
-                                        </div>
-                                        <div class="bg-slate-50 p-4 rounded-2xl flex justify-between items-center text-xs font-bold uppercase tracking-widest text-slate-400 border border-slate-100">
-                                            <span>🔪 Dificultad</span> <span class="text-emerald-600 font-black">${r.difficulty || 'Media'}</span>
-                                        </div>
-                                        <div class="bg-slate-50 p-4 rounded-2xl flex justify-between items-center text-xs font-bold uppercase tracking-widest text-slate-400 border border-slate-100">
-                                            <span>🥗 Estilo</span> <span class="text-slate-900 font-black">${r.diet_type || 'Equilibrada'}</span>
+                                <button class="close-btn"><i class="fas fa-times-circle"></i></button>
+                            </div>
+                            <div class="grid-layout">
+                                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:3rem;">
+                                    <div>
+                                        <h4 class="modal-section-title"><span class="num-tag">01</span> Ingredientes</h4>
+                                        <div class="modal-ingredients">${formatList(r.ingredients)}</div>
+                                    </div>
+                                    <div>
+                                        <h4 class="modal-section-title"><span class="num-tag">02</span> Bio-Datos</h4>
+                                        <div class="modal-bio-data">
+                                            <div class="bio-item"><span>⏱ Tiempo</span> <span>${r.prep_time || '20 min'}</span></div>
+                                            <div class="bio-item"><span>🔪 Dificultad</span> <span class="highlight">${r.difficulty || 'Media'}</span></div>
+                                            <div class="bio-item"><span>🥗 Estilo</span> <span>${r.diet_type || 'Equilibrada'}</span></div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div>
-                                <h4 class="text-xl font-black text-slate-800 mb-8 flex items-center uppercase tracking-tighter">
-                                    <span class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xs mr-3 font-black">03</span> Preparación Master
-                                </h4>
-                                <div class="text-slate-600 leading-relaxed whitespace-pre-wrap text-sm bg-slate-50 p-10 rounded-[40px] border border-dashed border-slate-200 border-2">${Array.isArray(r.instructions) ? r.instructions.join('\n') : (r.instructions || '')}</div>
+                                <div>
+                                    <h4 class="modal-section-title"><span class="num-tag">03</span> Preparación Master</h4>
+                                    <div class="modal-instructions">${formatList(r.instructions)}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
-            modal.querySelector('.close-btn').onclick = () => modal.remove();
-            this.shadowRoot.appendChild(modal);
+            host.querySelector('.close-btn').onclick = () => host.innerHTML = '';
         }
     }
 
@@ -283,79 +494,98 @@
         async fetchAndRender() {
             const { data, error } = await this.supabase.from('gym_routines').select('*').eq('owner_id', this.ownerId).order('created_at', { ascending: false });
             if (error) return this.renderError('Error de conexión.');
-            this.renderContent(data || []);
+
+            const routines = data || [];
+            if (routines.length === 0) return this.renderEmpty();
+            this.renderContent(routines);
         }
 
         renderContent(routines) {
             this.shadowRoot.innerHTML = `
-                <script src="https://cdn.tailwindcss.com"></script>
                 <style>${SHARED_STYLES}</style>
-                <div class="max-w-[1400px] mx-auto p-5 font-['Raleway']">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <div class="wisbe-container">
+                    <div id="routines-grid" class="wisbe-grid">
                         ${routines.map((r, index) => `
-                            <div class="bg-white rounded-[40px] border border-slate-100 p-10 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer routine-card group" data-index="${index}">
-                                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-8 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-500">
-                                    <i class="fas fa-dumbbell"></i>
-                                </div>
-                                <h3 class="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight">${r.title}</h3>
-                                <div class="flex flex-wrap gap-3">
-                                    <span class="px-4 py-1.5 bg-slate-50 text-slate-400 text-[9px] font-black uppercase tracking-widest rounded-lg border border-slate-100">${r.difficulty_level}</span>
-                                    <span class="px-4 py-1.5 bg-blue-50 text-blue-600 text-[9px] font-black uppercase tracking-widest rounded-lg border border-blue-100">${r.plan_duration_weeks} Semanas</span>
+                            <div class="card animate-fade-in" style="padding:2.5rem; cursor:pointer; border-radius:40px;" data-id="${r.id}">
+                                <div class="routine-icon-box"><i class="fas fa-dumbbell"></i></div>
+                                <h3 class="card-title">${r.title}</h3>
+                                <div class="routine-badges">
+                                    <span class="routine-badge difficulty">${r.difficulty_level}</span>
+                                    <span class="routine-badge duration">${r.plan_duration_weeks} Semanas</span>
                                 </div>
                             </div>
                         `).join('')}
                     </div>
                 </div>
+                <div id="modal-host"></div>
             `;
 
-            this.shadowRoot.querySelectorAll('.routine-card').forEach(card => {
+            this.shadowRoot.querySelectorAll('.card').forEach(card => {
                 card.onclick = () => {
-                    const idx = card.getAttribute('data-index');
-                    this.openModal(routines[idx]);
+                    const routine = routines.find(rout => rout.id == card.dataset.id);
+                    this.openModal(routine);
                 };
             });
         }
 
         openModal(r) {
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position:fixed; inset:0; background:rgba(15, 23, 42, 0.95); z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(24px);';
-            modal.innerHTML = `
-                <script src="https://cdn.tailwindcss.com"></script>
-                <div class="bg-white w-full max-w-5xl rounded-[50px] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-white/10 animate-fade-in font-['Raleway']">
-                    <div class="p-10 md:p-14 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                        <div>
-                            <span class="text-blue-600 font-black text-[10px] uppercase tracking-[0.2em] mb-2 block">${r.difficulty_level}</span>
-                            <h2 class="text-4xl font-black text-slate-900 leading-none tracking-tighter uppercase">${r.title}</h2>
-                        </div>
-                        <button class="close-btn w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-slate-400 hover:text-red-500 transition-all border border-slate-100">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-                    <div class="p-10 md:p-14 overflow-y-auto flex-1 bg-white">
-                        <div class="space-y-16">
-                            ${(r.exercises || []).map(day => `
-                                <div>
-                                    <h4 class="inline-block px-6 py-2 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest mb-10 shadow-lg shadow-blue-600/20">${day.day}</h4>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        ${day.exercises.map(ex => `
-                                            <div class="p-8 bg-slate-50 rounded-[35px] border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-500 group">
-                                                <p class="font-black text-slate-900 text-lg mb-2 uppercase tracking-tight group-hover:text-blue-600 transition-colors">${ex.name}</p>
-                                                <div class="flex items-center gap-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                                    <span class="px-3 py-1 bg-white rounded-lg border border-slate-100">${ex.sets} Series</span>
-                                                    <span class="px-3 py-1 bg-white rounded-lg border border-slate-100">${ex.reps} Reps</span>
-                                                </div>
-                                                ${ex.video ? `<a href="${ex.video}" target="_blank" class="mt-6 flex items-center text-[9px] font-black text-blue-600 uppercase tracking-widest group-hover:translate-x-2 transition-transform"><i class="fas fa-play-circle mr-2"></i> Ver ejecución</a>` : ''}
-                                            </div>
-                                        `).join('')}
-                                    </div>
+            const host = this.shadowRoot.getElementById('modal-host');
+            const exercises = ensureParsed(r.exercises);
+            host.innerHTML = `
+                <div class="modal-overlay">
+                    <div class="modal-container modal-container-full animate-fade-in" style="max-width:1024px; flex-direction:column;">
+                        <div style="padding:2.5rem; background:var(--wisbe-slate-50); border-bottom:1px solid var(--wisbe-slate-100); display:flex; flex-wrap: wrap; justify-content:space-between; align-items:center; gap: 1.5rem;">
+                            <div style="flex-grow: 1; min-width: 250px;">
+                                <span style="color:var(--wisbe-blue); font-weight:900; font-size:10px; text-transform:uppercase; letter-spacing:0.2em; display:block; margin-bottom:0.5rem;">${r.difficulty_level}</span>
+                                <h2 style="font-size:2.25rem; font-weight:900; color:var(--wisbe-slate-900); margin:0; text-transform:uppercase; letter-spacing:-0.05em;">${r.title}</h2>
+                            </div>
+                            <div style="display:flex; gap:1rem;">
+                                <div style="background:white; padding:0.75rem 1.5rem; border-radius:1rem; border:1px solid var(--wisbe-slate-200); text-align:center;">
+                                    <p style="margin:0; font-size:8px; color:var(--wisbe-slate-400); font-weight:900; text-transform:uppercase; letter-spacing:0.1em;">Duración</p>
+                                    <p style="margin:0; font-size:12px; color:var(--wisbe-slate-700); font-weight:700;">${r.plan_duration_weeks} Sem</p>
                                 </div>
-                            `).join('')}
+                                <div style="background:white; padding:0.75rem 1.5rem; border-radius:1rem; border:1px solid var(--wisbe-slate-200); text-align:center;">
+                                    <p style="margin:0; font-size:8px; color:var(--wisbe-slate-400); font-weight:900; text-transform:uppercase; letter-spacing:0.1em;">Público</p>
+                                    <p style="margin:0; font-size:12px; color:var(--wisbe-slate-700); font-weight:700;">${r.target_gender}</p>
+                                </div>
+                            </div>
+                            <button class="close-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div style="padding:2.5rem; overflow-y:auto; flex:1; background:white;">
+                            <div class="grid-layout">
+                                ${exercises.map(day => `
+                                    <div>
+                                        <div class="day-header">
+                                            <span class="day-tag">${day.day}</span>
+                                            <div class="day-line"></div>
+                                        </div>
+                                        <div class="wisbe-grid">
+                                            ${ensureParsed(day.exercises).map(ex => `
+                                                <div class="exercise-card">
+                                                    <div>
+                                                        <p class="exercise-name">${ex.name}</p>
+                                                        <div class="exercise-meta">
+                                                            <span class="highlight">${ex.sets}</span> SERIES &times; <span class="highlight">${ex.reps}</span> REPS
+                                                        </div>
+                                                    </div>
+                                                    ${ex.video ? `
+                                                        <a href="${ex.video}" target="_blank" class="exercise-video-btn">
+                                                            <i class="fas fa-play" style="font-size: 10px; margin-left: 2px;"></i>
+                                                        </a>
+                                                    ` : ''}
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
-            modal.querySelector('.close-btn').onclick = () => modal.remove();
-            this.shadowRoot.appendChild(modal);
+            host.querySelector('.close-btn').onclick = () => host.innerHTML = '';
         }
     }
 
@@ -364,36 +594,29 @@
         async fetchAndRender() {
             const { data, error } = await this.supabase.from('gym_trainers').select('*').eq('owner_id', this.ownerId).order('created_at', { ascending: false });
             if (error) return this.renderError('Error de conexión.');
-            this.renderContent(data || []);
+
+            const trainers = data || [];
+            if (trainers.length === 0) return this.renderEmpty();
+            this.renderContent(trainers);
         }
 
         renderContent(trainers) {
             this.shadowRoot.innerHTML = `
-                <script src="https://cdn.tailwindcss.com"></script>
                 <style>${SHARED_STYLES}</style>
-                <div class="max-w-[1400px] mx-auto p-5 font-['Raleway']">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+                <div class="wisbe-container">
+                    <div class="wisbe-grid">
                         ${trainers.map(t => `
-                            <div class="bg-white rounded-[50px] shadow-sm border border-slate-50 p-10 flex flex-col items-center text-center hover:shadow-2xl hover:-translate-y-3 transition-all duration-700 animate-fade-in group">
-                                <div class="w-32 h-32 rounded-full border-4 border-slate-50 overflow-hidden mb-8 bg-slate-100 shadow-sm relative">
-                                    <img src="${t.image_url || 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80'}"
-                                         class="w-full h-full object-cover">
+                            <div class="card animate-fade-in" style="padding:2.5rem; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                                <div class="trainer-avatar">
+                                    <img src="${t.image_url || 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80'}" style="width:100%; height:100%; object-fit:cover;">
                                 </div>
-                                <h3 class="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tight">${t.full_name}</h3>
-                                <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-6">${t.specialty}</p>
-                                <p class="text-sm text-slate-500 mb-10 line-clamp-3 leading-relaxed">${t.bio || 'Sin descripción'}</p>
+                                <h3 class="card-title" style="margin-bottom:0.5rem;">${t.full_name}</h3>
+                                <p class="trainer-specialty">${t.specialty}</p>
+                                <p class="trainer-bio">${t.bio || 'Sin descripción'}</p>
 
-                                <div class="mt-auto flex gap-4 pt-8 border-t border-slate-50 w-full justify-center">
-                                    ${t.whatsapp_url ? `
-                                        <a href="${t.whatsapp_url}" target="_blank" class="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all duration-500">
-                                            <i class="fab fa-whatsapp text-lg"></i>
-                                        </a>
-                                    ` : ''}
-                                    ${t.instagram_url ? `
-                                        <a href="https://instagram.com/${t.instagram_url.replace('@','')}" target="_blank" class="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-pink-500 hover:text-white transition-all duration-500">
-                                            <i class="fab fa-instagram text-lg"></i>
-                                        </a>
-                                    ` : ''}
+                                <div class="trainer-footer">
+                                    ${t.whatsapp_url ? `<a href="${t.whatsapp_url}" target="_blank" class="social-link wa-btn">Contactar <i class="fab fa-whatsapp"></i></a>` : ''}
+                                    ${t.instagram_url ? `<a href="https://instagram.com/${t.instagram_url.replace('@','')}" target="_blank" class="social-link ig"><i class="fab fa-instagram"></i></a>` : ''}
                                 </div>
                             </div>
                         `).join('')}
@@ -404,8 +627,8 @@
     }
 
     // Register elements
-    customElements.define('wisbe-gymnutricion', WisbeGymNutricion);
-    customElements.define('wisbe-gymrutinas', WisbeGymRutinas);
-    customElements.define('wisbe-gymentrenadores', WisbeGymEntrenadores);
+    if (!customElements.get('wisbe-gymnutricion')) customElements.define('wisbe-gymnutricion', WisbeGymNutricion);
+    if (!customElements.get('wisbe-gymrutinas')) customElements.define('wisbe-gymrutinas', WisbeGymRutinas);
+    if (!customElements.get('wisbe-gymentrenadores')) customElements.define('wisbe-gymentrenadores', WisbeGymEntrenadores);
 
 })();

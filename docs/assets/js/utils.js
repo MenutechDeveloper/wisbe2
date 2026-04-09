@@ -299,9 +299,7 @@ export function renderNavbar() {
             <a href="index.html" class="text-xl font-bold tracking-tight text-slate-900 uppercase">Dashboard</a>
             <ul class="hidden md:flex space-x-6 items-center font-semibold text-sm text-slate-600">
                 <li><a href="index.html" class="hover:text-blue-600 transition-colors">Inicio</a></li>
-                <li><a href="nutricion.html" class="hover:text-blue-600 transition-colors">Nutrición</a></li>
-                <li><a href="rutinas.html" class="hover:text-blue-600 transition-colors">Rutinas</a></li>
-                <li><a href="entrenadores.html" class="hover:text-blue-600 transition-colors">Equipo</a></li>
+                <li><a href="adminWidgetTest.html" class="hover:text-blue-600 transition-colors">Laboratorio</a></li>
                 <li><a href="test.html" class="btn btn-primary text-xs uppercase tracking-wider">Hacer Test</a></li>
 
                 ${isAdminOrOwner ? `

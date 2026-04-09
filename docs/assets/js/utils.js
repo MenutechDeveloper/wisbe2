@@ -300,7 +300,6 @@ export function renderNavbar() {
             <ul class="hidden md:flex space-x-6 items-center font-semibold text-sm text-slate-600">
                 <li><a href="index.html" class="hover:text-blue-600 transition-colors">Inicio</a></li>
                 <li><a href="adminWidgetTest.html" class="hover:text-blue-600 transition-colors">Laboratorio</a></li>
-                <li><a href="test.html" class="btn btn-primary text-xs uppercase tracking-wider">Hacer Test</a></li>
 
                 ${isAdminOrOwner ? `
                     <li><a href="gym.html" class="text-slate-400 hover:text-blue-500 transition-colors" title="Administración"><i class="fas fa-cog text-lg"></i></a></li>

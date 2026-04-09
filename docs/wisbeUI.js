@@ -54,9 +54,19 @@
             display: block !important;
             width: 100% !important;
             font-family: 'Lato', sans-serif;
-            --wisbe-primary: #3b82f6;
             --wisbe-emerald: #10b981;
+            --wisbe-emerald-600: #059669;
+            --wisbe-blue-500: #3b82f6;
+            --wisbe-blue-600: #2563eb;
+            --wisbe-slate-50: #f8fafc;
+            --wisbe-slate-100: #f1f5f9;
+            --wisbe-slate-200: #e2e8f0;
+            --wisbe-slate-400: #94a3b8;
+            --wisbe-slate-500: #64748b;
+            --wisbe-slate-600: #475569;
+            --wisbe-slate-800: #1e293b;
             --wisbe-slate-900: #0f172a;
+            --wisbe-slate-950: #020617;
         }
 
         * { box-sizing: border-box; }
@@ -66,119 +76,209 @@
             margin-left: auto;
             margin-right: auto;
             padding: 20px;
-            max-width: 1400px;
         }
 
-        /* GRID FLEXIBLE: Evita que las tarjetas se vean estrechas en contenedores pequeños */
         .wisbe-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 3rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2.5rem;
             width: 100%;
         }
 
-        .wisbe-loader { padding: 80px; text-align: center; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; }
+        .wisbe-loader { padding: 80px; text-align: center; color: var(--wisbe-slate-400); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; }
         .wisbe-error { padding: 40px; text-align: center; color: #ef4444; background: #fef2f2; border-radius: 20px; font-weight: 800; font-size: 11px; text-transform: uppercase; border: 1px solid #fee2e2; }
 
-        /* --- NUTRICION (PARIDAD TOTAL CON NUTRICION.HTML) --- */
+        /* --- FILTERS (Original design) --- */
+        .filters {
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            border: 1px solid var(--wisbe-slate-100);
+            padding: 2rem;
+            margin-bottom: 5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .filter-group { display: flex; flex-wrap: wrap; gap: 1rem; }
+        .filter-select {
+            background: var(--wisbe-slate-50);
+            padding: 0.75rem 2rem;
+            border-radius: 1rem;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--wisbe-slate-500);
+            border: none;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-select:focus { ring: 2px solid var(--wisbe-emerald); }
+        .results-count { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--wisbe-slate-400); }
+
+        /* --- NUTRICION CARDS --- */
         .n-card {
-            background: white; border-radius: 50px;
+            background: white;
+            border-radius: 50px;
             box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-            border: 1px solid #f8fafc;
-            overflow: hidden; transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--wisbe-slate-50);
+            overflow: hidden;
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column;
             width: 100%;
+            cursor: default;
         }
-        .n-card:hover { transform: translateY(-12px); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); }
+        .n-card:hover { transform: translateY(-0.75rem); box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25); }
 
-        /* Imagen Cuadrada (Square Design) para evitar estiramientos */
         .n-img-wrapper {
-            width: 100%;
-            aspect-ratio: 1 / 1;
+            height: 16rem;
             position: relative;
             overflow: hidden;
-            background: #f1f5f9;
+            background: var(--wisbe-slate-200);
         }
         .n-img { width: 100%; height: 100%; object-fit: cover; transition: all 1s; filter: grayscale(0.2); }
-        .n-card:hover .n-img { transform: scale(1.15); filter: grayscale(0); }
+        .n-card:hover .n-img { transform: scale(1.25); filter: grayscale(0); }
 
-        .n-badge { position: absolute; top: 1.5rem; left: 1.5rem; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 0.6rem 1.2rem; border-radius: 1.25rem; font-size: 10px; font-weight: 900; color: #10b981; text-transform: uppercase; letter-spacing: 1px; z-index: 10; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .n-badge {
+            position: absolute; top: 1.5rem; left: 1.5rem;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(4px);
+            padding: 0.5rem 1rem; border-radius: 1rem;
+            font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--wisbe-emerald); shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
 
         .n-content { padding: 2.5rem; flex-grow: 1; display: flex; flex-direction: column; }
-        .n-title { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 900; color: #1e293b; margin: 0 0 1.5rem 0; line-height: 1.2; text-transform: uppercase; letter-spacing: -0.025em; }
+        .n-title { font-size: 1.5rem; font-weight: 900; color: var(--wisbe-slate-800); margin: 0 0 1.5rem 0; line-height: 1.2; letter-spacing: -0.025em; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 
-        .n-stats { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; padding: 1.5rem 0; margin-bottom: 2rem; }
+        .n-stats { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--wisbe-slate-50); border-bottom: 1px solid var(--wisbe-slate-50); padding: 1.5rem 0; margin-bottom: 2.5rem; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--wisbe-slate-400); }
         .n-stat { text-align: center; }
-        .n-stat-val { display: block; font-size: 1.75rem; font-weight: 900; color: #10b981; margin-bottom: 0.25rem; }
-        .n-stat-label { font-size: 9px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+        .n-stat-val { display: block; font-size: 1.5rem; font-weight: 900; color: var(--wisbe-emerald); margin-bottom: 0.25rem; }
+        .n-stat-val.alt { color: var(--wisbe-slate-800); }
 
-        .n-btn { width: 100%; padding: 1.25rem; background: #0f172a; color: white; border-radius: 1.875rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 11px; border: none; cursor: pointer; transition: all 0.3s; margin-top: auto; }
-        .n-btn:hover { background: #10b981; box-shadow: 0 15px 30px rgba(16, 185, 129, 0.3); }
+        .n-btn { width: 100%; padding: 1.25rem; background: var(--wisbe-slate-900); color: white; border-radius: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; border: none; cursor: pointer; transition: all 0.3s; margin-top: auto; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+        .n-btn:hover { background: var(--wisbe-emerald); box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.2); }
 
-        /* --- RUTINAS (PARIDAD TOTAL CON RUTINAS.HTML) --- */
+        /* --- RUTINAS CARDS --- */
         .r-card {
-            background: white; border-radius: 40px; border: 1px solid #f1f5f9; padding: 2.5rem;
-            transition: all 0.5s; cursor: pointer; display: flex; flex-direction: column; height: 100%;
+            background: white; border-radius: 1rem; border: 1px solid var(--wisbe-slate-200); padding: 2rem;
+            transition: all 0.3s; cursor: pointer; display: flex; flex-direction: column; height: 100%;
         }
-        .r-card:hover { border-color: #3b82f6; transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
-        .r-icon { width: 4.5rem; height: 4.5rem; background: #eff6ff; color: #3b82f6; border-radius: 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin-bottom: 2rem; border: 1px solid #dbeafe; transition: all 0.3s; }
-        .r-card:hover .r-icon { background: #3b82f6; color: white; transform: rotate(-5deg); }
-        .r-title { font-family: 'Montserrat', sans-serif; font-size: 1.35rem; font-weight: 900; color: #0f172a; margin: 0 0 1.25rem 0; text-transform: uppercase; letter-spacing: -0.025em; }
-        .r-meta { display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 10px; font-weight: 900; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; margin-bottom: 2.5rem; }
-        .r-badge { background: #f8fafc; padding: 0.4rem 1.1rem; border-radius: 0.6rem; border: 1px solid #f1f5f9; }
-        .r-footer { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid #f1f5f9; color: #3b82f6; font-size: 11px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; letter-spacing: 1px; }
+        .r-card:hover { border-color: var(--wisbe-blue-500); }
+        .r-icon { width: 4rem; height: 4rem; background: #eff6ff; color: var(--wisbe-blue-500); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 2rem; border: 1px solid #dbeafe; transition: all 0.3s; }
+        .r-card:hover .r-icon { background: var(--wisbe-blue-500); color: white; }
+        .r-title { font-size: 1.25rem; font-weight: 700; color: var(--wisbe-slate-900); margin: 0 0 0.5rem 0; text-transform: uppercase; letter-spacing: -0.025em; }
+        .r-meta { display: flex; align-items: center; gap: 1rem; font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--wisbe-slate-400); letter-spacing: 0.1em; margin-bottom: 2rem; }
+        .r-badge { background: var(--wisbe-slate-50); padding: 0.125rem 0.5rem; border-radius: 0.25rem; border: 1px solid var(--wisbe-slate-100); }
+        .r-footer { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--wisbe-slate-100); color: var(--wisbe-blue-500); font-size: 10px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; letter-spacing: 0.1em; }
+        .r-footer i { margin-left: 0.5rem; transition: transform 0.3s; }
+        .r-card:hover .r-footer i { transform: translateX(0.5rem); }
 
-        /* --- ENTRENADORES (PARIDAD TOTAL CON ENTRENADORES.HTML) --- */
+        /* --- ENTRENADORES CARDS --- */
         .t-card {
-            background: white; border-radius: 45px; border: 1px solid #f1f5f9; padding: 3rem;
-            text-align: center; display: flex; flex-direction: column; align-items: center; transition: all 0.5s; height: 100%;
+            background: white; border-radius: 1rem; border: 1px solid var(--wisbe-slate-200); padding: 2.5rem;
+            text-align: center; display: flex; flex-direction: column; align-items: center; transition: all 0.3s; height: 100%;
         }
-        .t-card:hover { border-color: #3b82f6; transform: translateY(-10px); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.08); }
-        .t-avatar { width: 7.5rem; height: 7.5rem; border-radius: 9999px; border: 5px solid #f8fafc; overflow: hidden; margin-bottom: 2rem; transition: all 0.5s; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
-        .t-card:hover .t-avatar { transform: scale(1.08); border-color: #eff6ff; }
+        .t-card:hover { border-color: var(--wisbe-blue-500); }
+        .t-avatar { width: 7rem; height: 7rem; border-radius: 9999px; border: 4px solid var(--wisbe-slate-50); overflow: hidden; margin-bottom: 2rem; transition: all 0.5s; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+        .t-card:hover .t-avatar { transform: scale(1.05); }
         .t-img { width: 100%; height: 100%; object-fit: cover; }
-        .t-specialty { color: #3b82f6; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; background: #eff6ff; padding: 0.5rem 1.25rem; border-radius: 9999px; margin-bottom: 1rem; border: 1px solid #dbeafe; }
-        .t-name { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 900; color: #0f172a; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: -0.025em; }
-        .t-bio { color: #64748b; font-size: 14px; line-height: 1.7; margin-bottom: 2.5rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-style: italic; }
-        .t-actions { width: 100%; display: flex; gap: 1rem; margin-top: auto; padding-top: 2rem; border-top: 1px solid #f1f5f9; }
-        .t-wa-btn { flex-grow: 1; background: #3b82f6; color: white; padding: 1rem; border-radius: 1.25rem; font-weight: 900; text-transform: uppercase; font-size: 11px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.6rem; transition: all 0.3s; }
-        .t-wa-btn:hover { background: #10b981; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2); }
-        .t-ig-btn { width: 3.5rem; height: 3.5rem; background: #f1f5f9; color: #475569; border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; font-size: 1.25rem; }
-        .t-ig-btn:hover { background: #3b82f6; color: white; transform: translateY(-3px); }
+        .t-info { margin-bottom: 1.5rem; }
+        .t-specialty { color: var(--wisbe-blue-600); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; background: #eff6ff; padding: 0.25rem 0.75rem; border-radius: 9999px; margin-bottom: 0.5rem; border: 1px solid #dbeafe; display: inline-block; }
+        .t-name { font-size: 1.25rem; font-weight: 700; color: var(--wisbe-slate-900); text-transform: uppercase; letter-spacing: -0.025em; margin: 0; }
+        .t-bio { color: var(--wisbe-slate-500); font-size: 0.875rem; line-height: 1.625; margin-bottom: 2rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .t-actions { width: 100%; display: flex; gap: 1rem; margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--wisbe-slate-100); }
+        .t-wa-btn { flex-grow: 1; background: var(--wisbe-blue-500); color: white; padding: 0.75rem; border-radius: 0.5rem; font-weight: 900; text-transform: uppercase; font-size: 10px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s; box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2); }
+        .t-wa-btn:hover { box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2); }
+        .t-ig-btn { width: 3rem; height: 3rem; background: var(--wisbe-slate-100); color: var(--wisbe-slate-600); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; font-size: 1.25rem; }
+        .t-ig-btn:hover { background: var(--wisbe-slate-200); color: var(--wisbe-blue-500); }
 
-        /* --- FILTERS --- */
-        .filters { background: white; border-radius: 45px; border: 1px solid #f1f5f9; padding: 1.5rem 3rem; margin-bottom: 5rem; display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; justify-content: space-between; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .filter-select { background: #f8fafc; padding: 1rem 1.75rem; border-radius: 1.25rem; font-size: 10px; font-weight: 900; text-transform: uppercase; border: 1px solid transparent; outline: none; cursor: pointer; color: #64748b; transition: all 0.3s; }
-        .filter-select:focus { border-color: #10b981; background: white; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.05); }
-        .results-count { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #94a3b8; letter-spacing: 2px; }
+        /* --- MODAL NUTRICION (ULTRA) --- */
+        .n-modal-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(24px); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .n-modal-container { background: white; width: 100%; max-width: 72rem; max-height: 95vh; border-radius: 60px; overflow: hidden; box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5); display: flex; flex-direction: column; border: 1px solid rgba(255,255,255,0.1); }
+        @media (min-width: 1280px) { .n-modal-container { flex-direction: row; } }
 
-        /* --- MODAL (ULTRA LUXURY) --- */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 2rem; }
-        .modal-container { background: white; width: 100%; max-width: 1100px; max-height: 92vh; border-radius: 65px; overflow-y: auto; position: relative; padding: 5rem; box-shadow: 0 40px 100px -20px rgba(0,0,0,0.6); }
+        .n-modal-left { position: relative; height: 20rem; }
+        @media (min-width: 1280px) { .n-modal-left { width: 41.666667%; height: auto; } }
+        .n-modal-img { width: 100%; height: 100%; object-fit: cover; }
+        .n-modal-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, black, transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 3rem; }
+        .n-modal-badge { background: var(--wisbe-emerald); color: white; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em; padding: 0.5rem 1.25rem; border-radius: 1rem; width: fit-content; margin-bottom: 1rem; box-shadow: 0 20px 25px -5px rgba(6, 78, 59, 0.4); }
+        .n-modal-title { font-size: 3rem; font-weight: 900; color: white; line-height: 0.9; letter-spacing: -0.05em; margin: 0; }
 
-        .m-close { position: absolute; top: 2.5rem; right: 2.5rem; background: #f8fafc; border: none; width: 4.5rem; height: 4.5rem; border-radius: 9999px; font-size: 1.75rem; color: #cbd5e1; cursor: pointer; transition: all 0.4s; display: flex; align-items: center; justify-content: center; z-index: 100; }
-        .m-close:hover { background: #fee2e2; color: #ef4444; transform: rotate(90deg); }
+        .n-modal-right { flex-grow: 1; padding: 2rem; overflow-y: auto; background: white; display: flex; flex-direction: column; }
+        @media (min-width: 1280px) { .n-modal-right { padding: 4rem; width: 58.333333%; } }
 
-        .m-grid { display: grid; grid-template-columns: 1fr; gap: 5rem; }
-        @media (min-width: 850px) { .m-grid { grid-template-columns: 1fr 1.4fr; } }
+        .n-modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem; }
+        .n-modal-macros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; width: 100%; margin-right: 3rem; }
+        .n-macro-box { background: var(--wisbe-slate-50); padding: 1.5rem; rounded: 35px; border-radius: 35px; text-align: center; border: 1px solid var(--wisbe-slate-100); transition: all 0.3s; }
+        .n-macro-box:hover { background: #f0fdf4; }
+        .n-macro-val { display: block; font-size: 1.875rem; font-weight: 900; color: var(--wisbe-emerald); margin-bottom: 0.25rem; }
+        .n-macro-val.dark { color: var(--wisbe-slate-800); }
+        .n-macro-label { font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--wisbe-slate-400); }
 
-        .m-img { width: 100%; border-radius: 45px; aspect-ratio: 1; object-fit: cover; border: 2px solid #f8fafc; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
-        .m-title { font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 900; margin-bottom: 2.5rem; color: #0f172a; text-transform: uppercase; letter-spacing: -0.06em; line-height: 0.9; }
+        .n-close-btn { color: var(--wisbe-slate-200); cursor: pointer; font-size: 1.875rem; transition: all 0.3s; background: none; border: none; padding: 0; }
+        .n-close-btn:hover { color: var(--wisbe-emerald); }
 
-        .m-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 3.5rem; }
-        @media (min-width: 500px) { .m-stats { grid-template-columns: repeat(4, 1fr); } }
-        .m-stat { background: #f8fafc; padding: 2rem 1.5rem; border-radius: 40px; text-align: center; border: 1px solid #f1f5f9; transition: all 0.3s; }
-        .m-stat:hover { background: #ecfdf5; border-color: #d1fae5; transform: translateY(-5px); }
-        .m-stat-val { display: block; font-size: 2.25rem; font-weight: 900; color: #10b981; line-height: 1; margin-bottom: 0.5rem; }
-        .m-stat-label { font-size: 9px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; }
+        .n-section-grid { display: grid; gap: 3rem; margin-bottom: 4rem; }
+        @media (min-width: 768px) { .n-section-grid { grid-template-columns: repeat(2, 1fr); } }
 
-        .m-section-title { font-family: 'Montserrat', sans-serif; font-size: 1.35rem; font-weight: 900; color: #1e293b; margin-bottom: 2.5rem; text-transform: uppercase; display: flex; align-items: center; letter-spacing: -0.03em; }
-        .m-num { width: 2.75rem; height: 2.75rem; background: #ecfdf5; color: #10b981; border-radius: 0.85rem; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-right: 1.25rem; font-weight: 900; }
-        .m-text { color: #64748b; font-size: 15px; line-height: 2.2; white-space: pre-wrap; }
-        .m-box { background: #f8fafc; padding: 3.5rem; border-radius: 50px; border: 3px dashed #e2e8f0; }
+        .n-sec-title { font-size: 1.25rem; font-weight: 900; color: var(--wisbe-slate-800); margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: -0.025em; display: flex; align-items: center; }
+        .n-sec-num { width: 2rem; height: 2rem; background: #ecfdf5; color: var(--wisbe-emerald-600); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; margin-right: 0.75rem; font-weight: 900; }
 
-        .animate-fade-in { animation: fadeIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .n-ingredients { color: var(--wisbe-slate-600); line-height: 2; font-style: italic; font-size: 0.875rem; white-space: pre-wrap; padding-left: 1.5rem; border-left: 2px solid #ecfdf5; }
+        .n-biodata { display: flex; flex-direction: column; gap: 1rem; }
+        .n-bio-row { background: var(--wisbe-slate-50); padding: 1rem; border-radius: 1rem; border: 1px solid var(--wisbe-slate-100); display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+        .n-bio-label { color: var(--wisbe-slate-400); }
+        .n-bio-val { color: var(--wisbe-slate-900); }
+        .n-bio-val.accent { color: var(--wisbe-emerald-600); }
+
+        .n-instructions-box { background: var(--wisbe-slate-50); padding: 2.5rem; border-radius: 40px; border: 2px dashed var(--wisbe-slate-200); color: var(--wisbe-slate-600); font-size: 0.875rem; line-height: 1.625; white-space: pre-wrap; }
+
+        /* --- MODAL RUTINAS --- */
+        .r-modal-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(8px); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .r-modal-container { background: white; width: 100%; max-width: 64rem; border-radius: 40px; box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25); position: relative; display: flex; flex-direction: column; max-height: 90vh; }
+
+        .r-modal-close { position: absolute; top: 2rem; right: 2rem; width: 3rem; height: 3rem; background: var(--wisbe-slate-100); color: var(--wisbe-slate-400); border-radius: 9999px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.3s; z-index: 10; }
+        .r-modal-close:hover { background: #fee2e2; color: #ef4444; }
+
+        .r-modal-header { padding: 2.5rem; background: var(--wisbe-slate-50); border-bottom: 1px solid var(--wisbe-slate-100); border-radius: 40px 40px 0 0; }
+        @media (min-width: 1024px) { .r-modal-header { padding: 4rem; } }
+        .r-modal-header-flex { display: flex; flex-direction: column; justify-content: space-between; gap: 1.5rem; }
+        @media (min-width: 768px) { .r-modal-header-flex { flex-direction: row; align-items: flex-end; } }
+
+        .r-modal-subtitle { color: var(--wisbe-blue-600); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block; }
+        .r-modal-title { font-size: 2.25rem; font-weight: 900; color: var(--wisbe-slate-900); text-transform: uppercase; letter-spacing: -0.025em; margin: 0; }
+
+        .r-modal-meta { display: flex; gap: 1rem; }
+        .r-meta-box { background: white; padding: 0.75rem 1.5rem; border-radius: 1rem; border: 1px solid var(--wisbe-slate-200); text-align: left; }
+        .r-meta-label { font-size: 10px; color: var(--wisbe-slate-400); font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; margin: 0; }
+        .r-meta-val { font-size: 1rem; color: var(--wisbe-slate-700); font-weight: 700; margin: 0; }
+
+        .r-modal-body { padding: 2.5rem; overflow-y: auto; flex-grow: 1; }
+        @media (min-width: 1024px) { .r-modal-body { padding: 4rem; } }
+
+        .r-day-section { margin-bottom: 3rem; }
+        .r-day-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+        .r-day-badge { font-size: 0.875rem; font-weight: 900; color: var(--wisbe-slate-900); text-transform: uppercase; letter-spacing: 0.1em; background: var(--wisbe-slate-100); padding: 0.5rem 1.5rem; border-radius: 9999px; border: 1px solid var(--wisbe-slate-200); }
+        .r-day-line { flex-grow: 1; height: 1px; background: var(--wisbe-slate-100); }
+
+        .r-exercises-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media (min-width: 768px) { .r-exercises-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        .r-ex-card { background: var(--wisbe-slate-50); border: 1px solid var(--wisbe-slate-200); border-radius: 1rem; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .r-ex-name { color: var(--wisbe-slate-900); font-weight: 700; text-transform: uppercase; letter-spacing: -0.025em; font-size: 0.875rem; margin-bottom: 0.25rem; }
+        .r-ex-stats { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--wisbe-slate-400); }
+        .r-ex-accent { color: var(--wisbe-blue-500); }
+
+        .r-video-btn { width: 2.5rem; height: 2.5rem; background: white; color: var(--wisbe-blue-500); border-radius: 9999px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--wisbe-slate-200); text-decoration: none; transition: all 0.3s; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+        .r-video-btn:hover { background: var(--wisbe-blue-500); color: white; }
+
+        .animate-fade { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     `;
 
     function ensureArray(data) {
@@ -222,11 +322,11 @@
         }
 
         renderLoading() {
-            this.shadowRoot.innerHTML = `<style>${BASE_STYLES}</style><div class="wisbe-loader"><i class="fas fa-circle-notch fa-spin"></i> Sincronizando Biblioteca Maestro...</div>`;
+            this.shadowRoot.innerHTML = `<style>${BASE_STYLES}</style><div class="wisbe-loader"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem; margin-bottom:1rem; display:block;"></i> Sincronizando Biblioteca Maestro...</div>`;
         }
 
         renderError(msg) {
-            this.shadowRoot.innerHTML = `<style>${BASE_STYLES}</style><div class="wisbe-container"><div class="wisbe-error"><i class="fas fa-shield-alt" style="display:block; font-size:2.5rem; margin-bottom:1.5rem; opacity:0.2"></i> ${msg}</div></div>`;
+            this.shadowRoot.innerHTML = `<style>${BASE_STYLES}</style><div class="wisbe-container"><div class="wisbe-error"><i class="fas fa-exclamation-triangle" style="display:block; font-size:2rem; margin-bottom:1rem; opacity:0.5"></i> ${msg}</div></div>`;
         }
     }
 
@@ -247,8 +347,8 @@
             this.shadowRoot.innerHTML = `
                 <style>${BASE_STYLES}</style>
                 <div class="wisbe-container">
-                    <div class="filters">
-                        <div style="display:flex; gap:1.5rem; flex-wrap:wrap;">
+                    <div class="filters animate-fade">
+                        <div class="filter-group">
                             <select id="f-diet" class="filter-select">
                                 <option value="All">Dieta: Todas</option>
                                 <option value="Keto">Keto</option>
@@ -266,7 +366,7 @@
                                 <option value="Snack Proteico">Snack</option>
                             </select>
                         </div>
-                        <div id="count" class="results-count">0 Opciones Maestro</div>
+                        <div id="count" class="results-count">Escaneando recetario...</div>
                     </div>
                     <div id="grid" class="wisbe-grid"></div>
                 </div>
@@ -289,7 +389,7 @@
         renderGrid(recipes) {
             const grid = this.shadowRoot.getElementById('grid');
             grid.innerHTML = recipes.map((r, i) => `
-                <div class="n-card animate-fade-in" style="animation-delay: ${i*0.1}s">
+                <div class="n-card animate-fade" style="animation-delay: ${i*0.05}s">
                     <div class="n-img-wrapper">
                         <img src="${r.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600'}" class="n-img">
                         <span class="n-badge">${r.category}</span>
@@ -297,8 +397,8 @@
                     <div class="n-content">
                         <h3 class="n-title">${r.title}</h3>
                         <div class="n-stats">
-                            <div class="n-stat"><span class="n-stat-val">${r.calories || 0}</span><span class="n-stat-label">Kcal</span></div>
-                            <div class="n-stat"><span class="n-stat-val" style="color:#1e293b">${r.protein || 0}g</span><span class="n-stat-label">Proteínas</span></div>
+                            <div class="n-stat"><span class="n-stat-val">${r.calories || 0}</span><span>Kcal</span></div>
+                            <div class="n-stat"><span class="n-stat-val alt">${r.protein || 0}g</span><span>Prote</span></div>
                         </div>
                         <button class="n-btn open-btn" data-id="${r.id}">Receta Master</button>
                     </div>
@@ -313,44 +413,54 @@
         openModal(r) {
             const host = this.shadowRoot.getElementById('modal-host');
             host.innerHTML = `
-                <div class="modal-overlay">
-                    <div class="modal-container animate-fade-in">
-                        <button class="m-close"><i class="fas fa-times"></i></button>
-                        <div class="m-grid">
-                            <div>
-                                <img src="${r.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800'}" class="m-img">
-                                <div style="margin-top:3rem;" class="m-stats">
-                                    <div class="m-stat"><span class="m-stat-val">${r.calories || 0}</span><span class="m-stat-label">Kcal</span></div>
-                                    <div class="m-stat"><span class="m-stat-val" style="color:#0f172a">${r.protein || 0}</span><span class="m-stat-label">Proteínas</span></div>
-                                    <div class="m-stat"><span class="m-stat-val" style="color:#0f172a">${r.carbs || 0}</span><span class="m-stat-label">Carbs</span></div>
-                                    <div class="m-stat"><span class="m-stat-val" style="color:#0f172a">${r.fats || 0}</span><span class="m-stat-label">Grasas</span></div>
+                <div class="n-modal-overlay">
+                    <div class="n-modal-container animate-fade">
+                        <div class="n-modal-left">
+                            <img src="${r.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800'}" class="n-modal-img">
+                            <div class="n-modal-img-overlay">
+                                <span class="n-modal-badge">${r.category}</span>
+                                <h2 class="n-modal-title">${r.title}</h2>
+                            </div>
+                        </div>
+                        <div class="n-modal-right">
+                            <div class="n-modal-header">
+                                <div class="n-modal-macros">
+                                    <div class="n-macro-box"><span class="n-macro-val">${r.calories || 0}</span><span class="n-macro-label">Kcal</span></div>
+                                    <div class="n-macro-box"><span class="n-macro-val dark">${r.protein || 0}</span><span class="n-macro-label">Proteínas</span></div>
+                                    <div class="n-macro-box"><span class="n-macro-val dark">${r.carbs || 0}</span><span class="n-macro-label">Carbs</span></div>
+                                    <div class="n-macro-box"><span class="n-macro-val dark">${r.fats || 0}</span><span class="n-macro-label">Grasas</span></div>
+                                </div>
+                                <button class="n-close-btn m-close"><i class="fas fa-times-circle"></i></button>
+                            </div>
+
+                            <div class="n-section-grid">
+                                <div>
+                                    <h4 class="n-sec-title"><span class="n-sec-num">01</span> Ingredientes</h4>
+                                    <div class="n-ingredients">${ensureArray(r.ingredients).join('\n') || r.ingredients}</div>
+                                </div>
+                                <div>
+                                    <h4 class="n-sec-title"><span class="n-sec-num">02</span> Bio-Datos</h4>
+                                    <div class="n-biodata">
+                                        <div class="n-bio-row"><span class="n-bio-label">⏱ Tiempo</span><span class="n-bio-val">${r.prep_time || '20 min'}</span></div>
+                                        <div class="n-bio-row"><span class="n-bio-label">🔪 Dificultad</span><span class="n-bio-val accent">${r.difficulty || 'Media'}</span></div>
+                                        <div class="n-bio-row"><span class="n-bio-label">🥗 Estilo</span><span class="n-bio-val">${r.diet_type || 'Equilibrada'}</span></div>
+                                    </div>
                                 </div>
                             </div>
+
                             <div>
-                                <h2 class="m-title">${r.title}</h2>
-                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:3.5rem; margin-bottom:4rem;">
-                                    <div>
-                                        <h4 class="m-section-title"><span class="m-num">01</span> Ingredientes</h4>
-                                        <div class="m-text" style="border-left:4px solid #ecfdf5; padding-left:2rem; font-style:italic;">${Array.isArray(r.ingredients) ? r.ingredients.join('\n') : r.ingredients}</div>
-                                    </div>
-                                    <div class="space-y-8">
-                                        <h4 class="m-section-title"><span class="m-num">02</span> Bio-Datos</h4>
-                                        <div style="background:#f8fafc; padding:1.5rem; border-radius:1.5rem; border:1px solid #f1f5f9; display:flex; justify-content:space-between; font-size:10px; font-weight:900; text-transform:uppercase; margin-bottom:1.5rem;">
-                                            <span style="color:#94a3b8;">⏱ Tiempo Prep</span> <span style="color:#0f172a;">${r.prep_time || '20 min'}</span>
-                                        </div>
-                                        <div style="background:#f8fafc; padding:1.5rem; border-radius:1.5rem; border:1px solid #f1f5f9; display:flex; justify-content:space-between; font-size:10px; font-weight:900; text-transform:uppercase;">
-                                            <span style="color:#94a3b8;">🔪 Dificultad</span> <span style="color:#10b981;">${r.difficulty || 'Media'}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <h4 class="m-section-title"><span class="m-num">03</span> Preparación Master</h4>
-                                <div class="m-box m-text" style="line-height:2.4">${Array.isArray(r.instructions) ? r.instructions.join('\n') : r.instructions}</div>
+                                <h4 class="n-sec-title"><span class="n-sec-num">03</span> Preparación Master</h4>
+                                <div class="n-instructions-box">${ensureArray(r.instructions).join('\n') || r.instructions}</div>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
-            host.querySelector('.m-close').onclick = () => host.innerHTML = '';
+            host.querySelector('.m-close').onclick = () => {
+                host.innerHTML = '';
+                document.body.style.overflow = 'auto';
+            };
+            document.body.style.overflow = 'hidden';
         }
     }
 
@@ -373,14 +483,14 @@
                 <div class="wisbe-container">
                     <div id="grid" class="wisbe-grid">
                         ${this.routines.map((r, i) => `
-                            <div class="r-card animate-fade-in open-btn" style="animation-delay: ${i*0.1}s" data-id="${r.id}">
+                            <div class="r-card animate-fade open-btn" style="animation-delay: ${i*0.1}s" data-id="${r.id}">
                                 <div class="r-icon"><i class="fas fa-dumbbell"></i></div>
                                 <h3 class="r-title">${r.title}</h3>
                                 <div class="r-meta">
                                     <span class="r-badge">${r.difficulty_level}</span>
-                                    <span class="r-badge"><i class="far fa-calendar-alt" style="margin-right:0.6rem"></i> ${r.plan_duration_weeks} SEMANAS</span>
+                                    <span><i class="far fa-calendar-alt" style="margin-right:0.5rem"></i> ${r.plan_duration_weeks} SEMANAS</span>
                                 </div>
-                                <div class="r-footer">Explorar Plan <i class="fas fa-chevron-right" style="margin-left:auto;"></i></div>
+                                <div class="r-footer">Explorar Plan <i class="fas fa-arrow-right"></i></div>
                             </div>
                         `).join('')}
                     </div>
@@ -396,51 +506,64 @@
             const host = this.shadowRoot.getElementById('modal-host');
             const exercises = ensureArray(r.exercises);
             host.innerHTML = `
-                <div class="modal-overlay">
-                    <div class="modal-container animate-fade-in" style="max-width:1150px;">
-                        <button class="m-close"><i class="fas fa-times"></i></button>
-                        <div style="margin-bottom:5rem;">
-                            <span style="color:#3b82f6; font-weight:900; font-size:11px; text-transform:uppercase; letter-spacing:4px; display:block; margin-bottom:1rem;">${r.difficulty_level}</span>
-                            <h2 style="font-family:'Montserrat',sans-serif; font-size:3.5rem; font-weight:900; color:#0f172a; margin:0; text-transform:uppercase; letter-spacing:-0.06em; line-height:1;">${r.title}</h2>
-                        </div>
-                        <div style="display:flex; gap:2rem; margin-bottom:5rem; flex-wrap:wrap;">
-                            <div style="background:#f8fafc; padding:1.75rem 3rem; border-radius:2.5rem; border:1px solid #f1f5f9; text-align:center; min-width:180px;">
-                                <p style="margin:0 0 0.6rem 0; font-size:9px; color:#94a3b8; font-weight:900; text-transform:uppercase; letter-spacing:1px;">Duración Total</p>
-                                <p style="margin:0; font-size:18px; color:#1e293b; font-weight:700;">${r.plan_duration_weeks} Semanas</p>
-                            </div>
-                            <div style="background:#f8fafc; padding:1.75rem 3rem; border-radius:2.5rem; border:1px solid #f1f5f9; text-align:center; min-width:180px;">
-                                <p style="margin:0 0 0.6rem 0; font-size:9px; color:#94a3b8; font-weight:900; text-transform:uppercase; letter-spacing:1px;">Objetivo</p>
-                                <p style="margin:0; font-size:18px; color:#1e293b; font-weight:700;">${r.target_gender}</p>
-                            </div>
-                        </div>
-                        <div class="space-y-20">
-                            ${exercises.map(day => `
-                                <div style="margin-bottom:5rem;">
-                                    <div style="display:flex; align-items:center; gap:2.5rem; margin-bottom:3.5rem;">
-                                        <span style="padding:1.1rem 3rem; background:#f1f5f9; color:#0f172a; border-radius:9999px; font-weight:900; font-size:13px; text-transform:uppercase; border:1px solid #e2e8f0; letter-spacing:1px;">${day.day}</span>
-                                        <div style="flex-grow:1; height:2px; background:#f8fafc;"></div>
+                <div class="r-modal-overlay">
+                    <div class="r-modal-container animate-fade">
+                        <button class="r-modal-close m-close"><i class="fas fa-times"></i></button>
+                        <div class="r-modal-header">
+                            <div class="r-modal-header-flex">
+                                <div>
+                                    <span class="r-modal-subtitle">${r.difficulty_level}</span>
+                                    <h2 class="r-modal-title">${r.title}</h2>
+                                </div>
+                                <div class="r-modal-meta">
+                                    <div class="r-meta-box">
+                                        <p class="r-meta-label">Duración</p>
+                                        <p class="r-meta-val">${r.plan_duration_weeks} Semanas</p>
                                     </div>
-                                    <div class="wisbe-grid" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));">
-                                        ${ensureArray(day.exercises).map(ex => `
-                                            <div style="background:#f8fafc; padding:2.5rem; border-radius:35px; border:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; transition:all 0.4s;" class="ex-item">
-                                                <style>.ex-item:hover{border-color:#3b82f6; background:white; box-shadow:0 15px 40px rgba(0,0,0,0.06); transform:translateY(-5px);}</style>
-                                                <div>
-                                                    <p style="font-weight:900; color:#0f172a; margin:0 0 0.85rem 0; font-size:16px; text-transform:uppercase; letter-spacing:-0.02em;">${ex.name}</p>
-                                                    <p style="font-size:10px; font-weight:900; color:#94a3b8; text-transform:uppercase; margin:0; letter-spacing:1.5px;">
-                                                        <span style="color:#3b82f6;">${ex.sets}</span> SERIES &times; <span style="color:#3b82f6;">${ex.reps}</span> REPS
-                                                    </p>
-                                                </div>
-                                                ${ex.video ? `<a href="${ex.video}" target="_blank" style="width:3.5rem; height:3.5rem; background:white; color:#3b82f6; border-radius:9999px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; text-decoration:none; transition:all 0.4s; box-shadow:0 10px 15px rgba(0,0,0,0.05);"><i class="fas fa-play" style="font-size:12px; margin-left:3px;"></i></a>` : ''}
-                                            </div>
-                                        `).join('')}
+                                    <div class="r-meta-box">
+                                        <p class="r-meta-label">Público</p>
+                                        <p class="r-meta-val">${r.target_gender}</p>
                                     </div>
                                 </div>
-                            `).join('')}
+                            </div>
+                        </div>
+                        <div class="r-modal-body">
+                            <div class="space-y-12">
+                                ${exercises.map((day, idx) => `
+                                    <div class="r-day-section animate-fade" style="animation-delay: ${idx * 0.1}s">
+                                        <div class="r-day-header">
+                                            <span class="r-day-badge">${day.day}</span>
+                                            <div class="r-day-line"></div>
+                                        </div>
+                                        <div class="r-exercises-grid">
+                                            ${ensureArray(day.exercises).map(ex => `
+                                                <div class="r-ex-card">
+                                                    <div>
+                                                        <p class="r-ex-name">${ex.name}</p>
+                                                        <p class="r-ex-stats">
+                                                            <span class="r-ex-accent">${ex.sets}</span> Series &times; <span class="r-ex-accent">${ex.reps}</span> Repeticiones
+                                                        </p>
+                                                    </div>
+                                                    ${ex.video ? `
+                                                        <a href="${ex.video}" target="_blank" class="r-video-btn">
+                                                            <i class="fas fa-play" style="font-size:10px; margin-left:2px;"></i>
+                                                        </a>
+                                                    ` : ''}
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
-            host.querySelector('.m-close').onclick = () => host.innerHTML = '';
+            host.querySelector('.m-close').onclick = () => {
+                host.innerHTML = '';
+                document.body.style.overflow = 'auto';
+            };
+            document.body.style.overflow = 'hidden';
         }
     }
 
@@ -463,13 +586,15 @@
                 <div class="wisbe-container">
                     <div class="wisbe-grid">
                         ${this.trainers.map((t, i) => `
-                            <div class="t-card animate-fade-in" style="animation-delay: ${i*0.1}s">
+                            <div class="t-card animate-fade" style="animation-delay: ${i*0.1}s">
                                 <div class="t-avatar">
                                     <img src="${t.image_url || 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80'}" class="t-img">
                                 </div>
-                                <span class="t-specialty">${t.specialty}</span>
-                                <h3 class="t-name">${t.full_name}</h3>
-                                <p class="t-bio">${t.bio || 'Especialista certificado Wisbe comprometido con tus resultados extraordinarios.'}</p>
+                                <div class="t-info">
+                                    <span class="t-specialty">${t.specialty}</span>
+                                    <h3 class="t-name">${t.full_name}</h3>
+                                </div>
+                                <p class="t-bio">${t.bio || 'Sin descripción adicional disponible.'}</p>
                                 <div class="t-actions">
                                     ${t.whatsapp_url ? `<a href="${t.whatsapp_url}" target="_blank" class="t-wa-btn">Contactar <i class="fab fa-whatsapp"></i></a>` : ''}
                                     ${t.instagram_url ? `<a href="https://instagram.com/${t.instagram_url.replace('@','')}" target="_blank" class="t-ig-btn"><i class="fab fa-instagram"></i></a>` : ''}

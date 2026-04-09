@@ -1,11 +1,24 @@
 import CONFIG from './config.js';
 
 // Inicializar Supabase (usando la librería cargada vía CDN en el HTML)
-if (!window.supabase) {
-    console.error('[Wisbe] Supabase CDN no detectado. Asegúrate de incluir el script de Supabase en el HTML.');
-}
 const { createClient } = window.supabase || {};
-export const supabase = createClient ? createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY) : null;
+
+/**
+ * Cliente de Supabase configurado con persistencia robusta
+ * Se usa una storageKey única para evitar conflictos en dominios compartidos (como github.io)
+ */
+export const supabase = createClient ? createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY, {
+    auth: {
+        storageKey: 'wisbe-gym-auth-token',
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+    }
+}) : null;
+
+if (!supabase) {
+    console.error('[Wisbe] Error crítico: No se pudo inicializar el cliente de Supabase. Verifica el CDN.');
+}
 
 /**
  * Helper para subir a Cloudinary
@@ -165,63 +178,71 @@ export const Auth = {
     },
 
     async login(email, password) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password
-        });
+        try {
+            console.log('[Auth] Iniciando login para:', email);
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password
+            });
 
-        if (error) throw error;
+            if (error) throw error;
 
-        // Check if session is confirmed
-        if (!data.session) {
-             throw new Error('DEBES CONFIRMAR TU EMAIL. Revisa tu bandeja de entrada.');
-        }
-
-        // Fetch user profile from wisbe_users
-        let { data: profile, error: profileError } = await supabase
-            .from('wisbe_users')
-            .select('*')
-            .eq('id', data.user.id)
-            .maybeSingle();
-
-        // SELF-HEALING: If profile is missing (trigger/RLS issue), use RPC Bridge
-        if (!profile || profileError) {
-            console.warn('Profile missing or blocked by RLS, using Security Bridge RPC...');
-            const metadata = data.user.user_metadata || {};
-
-            const { data: rpcProfile, error: rpcError } = await supabase
-                .rpc('create_profile_if_missing', {
-                    p_id: data.user.id,
-                    p_email: data.user.email,
-                    p_full_name: metadata.full_name || '',
-                    p_domain: metadata.domain || null,
-                    p_role: metadata.role || 'gym-owner',
-                    p_owner_id: metadata.owner_id || null,
-                    p_business_unit: metadata.business_unit || 'gym'
-                });
-
-            if (rpcError) {
-                console.warn('RPC Security Bridge failed (Silent Fallback):', rpcError);
-                // No lanzamos error aquí, dejaremos que el fallback de abajo actúe
+            // Check if session is confirmed
+            if (!data.session) {
+                 throw new Error('DEBES CONFIRMAR TU EMAIL. Revisa tu bandeja de entrada.');
             }
-            profile = rpcProfile;
-        }
 
-        if (!profile) {
-            // Last resort: manual profile creation if everything failed
-            profile = {
-                id: data.user.id,
-                email: data.user.email,
-                username: data.user.email.split('@')[0],
-                full_name: data.user.user_metadata?.full_name || '',
-                domain: data.user.user_metadata?.domain || '',
-                role: data.user.user_metadata?.role || 'gym-owner',
-                owner_id: data.user.user_metadata?.owner_id || null
-            };
-        }
+            console.log('[Auth] Login exitoso, recuperando perfil...');
 
-        localStorage.setItem('gym_user', JSON.stringify(profile));
-        return profile;
+            // Fetch user profile from wisbe_users
+            let { data: profile, error: profileError } = await supabase
+                .from('wisbe_users')
+                .select('*')
+                .eq('id', data.user.id)
+                .maybeSingle();
+
+            // SELF-HEALING: If profile is missing (trigger/RLS issue), use RPC Bridge
+            if (!profile || profileError) {
+                console.warn('[Auth] Perfil no encontrado o bloqueado por RLS, intentando Auto-Heal RPC...');
+                const metadata = data.user.user_metadata || {};
+
+                const { data: rpcProfile, error: rpcError } = await supabase
+                    .rpc('create_profile_if_missing', {
+                        p_id: data.user.id,
+                        p_email: data.user.email,
+                        p_full_name: metadata.full_name || '',
+                        p_domain: metadata.domain || null,
+                        p_role: metadata.role || 'gym-owner',
+                        p_owner_id: metadata.owner_id || null,
+                        p_business_unit: metadata.business_unit || 'gym'
+                    });
+
+                if (rpcError) {
+                    console.warn('[Auth] Falló Security Bridge RPC:', rpcError);
+                }
+                profile = rpcProfile;
+            }
+
+            if (!profile) {
+                console.warn('[Auth] No se pudo recuperar perfil de DB, usando metadatos de sesión (Fallback)');
+                profile = {
+                    id: data.user.id,
+                    email: data.user.email,
+                    username: data.user.email.split('@')[0],
+                    full_name: data.user.user_metadata?.full_name || '',
+                    domain: data.user.user_metadata?.domain || '',
+                    role: data.user.user_metadata?.role || 'gym-owner',
+                    owner_id: data.user.user_metadata?.owner_id || null
+                };
+            }
+
+            localStorage.setItem('gym_user', JSON.stringify(profile));
+            console.log('[Auth] Sesión establecida para:', profile.email);
+            return profile;
+        } catch (err) {
+            console.error('[Auth] Error en login:', err);
+            throw err;
+        }
     },
 
     async logout() {
@@ -245,38 +266,58 @@ export const Auth = {
     },
 
     async checkAccess(rolesPermitidos = []) {
-        // First check session
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
+        try {
+            if (!supabase) {
+                console.error('[Auth] Supabase no inicializado en checkAccess');
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            // First check session
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+            if (sessionError || !session) {
+                console.log('[Auth] Sin sesión activa, redirigiendo a login...');
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            console.log('[Auth] Sesión detectada para:', session.user.email);
+
+            // Always fetch fresh profile to ensure role updates are reflected immediately
+            const { data: freshProfile, error: profileError } = await supabase
+                .from('wisbe_users')
+                .select('*')
+                .eq('id', session.user.id)
+                .maybeSingle();
+
+            if (profileError || !freshProfile) {
+                console.warn('[Auth] No se pudo obtener perfil fresco, usando caché local:', profileError);
+            } else {
+                console.log('[Auth] Perfil actualizado desde DB');
+                localStorage.setItem('gym_user', JSON.stringify(freshProfile));
+            }
+
+            const user = this.getUser();
+            if (!user) {
+                console.warn('[Auth] No hay datos de usuario en caché tras validación de sesión');
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            if (rolesPermitidos.length > 0 && !rolesPermitidos.includes(user.role)) {
+                console.error('[Auth] Rol no autorizado:', user.role);
+                await showPopup('Acceso no autorizado', 'No tienes permisos para ver esta sección', 'error');
+                window.location.href = 'index.html';
+                return null;
+            }
+
+            return user;
+        } catch (err) {
+            console.error('[Auth] Error crítico en checkAccess:', err);
             window.location.href = 'login.html';
             return null;
         }
-
-        // Always fetch fresh profile to ensure role updates are reflected immediately
-        const { data: freshProfile, error: profileError } = await supabase
-            .from('wisbe_users')
-            .select('*')
-            .eq('id', session.user.id)
-            .maybeSingle();
-
-        if (profileError || !freshProfile) {
-            console.warn('Could not fetch fresh profile in checkAccess, falling back to local storage');
-        } else {
-            localStorage.setItem('gym_user', JSON.stringify(freshProfile));
-        }
-
-        const user = this.getUser();
-        if (!user) {
-            window.location.href = 'login.html';
-            return null;
-        }
-
-        if (rolesPermitidos.length > 0 && !rolesPermitidos.includes(user.role)) {
-            await showPopup('Acceso no autorizado', 'No tienes permisos para ver esta sección', 'error');
-            window.location.href = 'index.html';
-            return null;
-        }
-        return user;
     }
 };
 

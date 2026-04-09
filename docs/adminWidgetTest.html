@@ -78,16 +78,24 @@
     </main>
 
     <!-- Cargamos wisbeUI globalmente para el lab -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="wisbeUI.js"></script>
     <script type="module">
         import { renderNavbar, Auth, showPopup } from './assets/js/utils.js';
 
         async function init() {
-            renderNavbar();
-            const user = await Auth.checkAccess(['gym-admin', 'gym-owner']);
+            // Check if we are in local development or production
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-            if (user && user.domain) {
-                document.getElementById('test-domain').value = user.domain;
+            if (!isLocal) {
+                renderNavbar();
+                await Auth.checkAccess(['gym-admin', 'gym-owner']);
+                const user = Auth.getUser();
+                if (user && user.domain) {
+                    document.getElementById('test-domain').value = user.domain;
+                }
+            } else {
+                console.log('[Wisbe Lab] Local mode: Auth skipped');
             }
 
             const runBtn = document.getElementById('run-test');

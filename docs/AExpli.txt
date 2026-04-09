@@ -1,0 +1,23 @@
+PASOS PARA INTEGRAR TUS WIDGETS EN CUALQUIER DOMINIO:
+
+1. Asegúrate de que el dominio esté bien configurado en tu perfil de Wisbe. Por ejemplo: "gympro.xyz". No incluyas "https://" ni "/" al final en la configuración del perfil.
+
+2. Copia y pega el siguiente código en el lugar de tu página web donde quieras que aparezca el contenido:
+
+<!-- Carga el motor de Wisbe (Solo una vez por página) -->
+<script src="https://wisbe.xyz/wisbeUI.js"></script>
+
+<!-- Inserta el módulo que desees -->
+<wisbe-gymnutricion domain="gympro.xyz"></wisbe-gymnutricion>
+
+---
+
+NOTAS IMPORTANTES:
+- El diseño ahora es "Cuadrado" (Square Design) para evitar que las imágenes se vean alargadas, manteniendo la estética de lujo.
+- Si no ves nada (pantalla en blanco), abre la "Consola de Desarrollador" (F12) en tu navegador y revisa si hay mensajes de error que digan "[WisbeUI]".
+- El widget detecta automáticamente si escribes "gympro.xyz", "www.gympro.xyz" o "https://gympro.xyz", pero se recomienda usar el dominio limpio.
+- Todo lo que edites en adminNutricion.html, adminRutinas.html o adminEntrenadores.html se actualizará automáticamente en tu sitio externo sin tener que cambiar el código.
+- Los widgets son responsivos: se verán en 1 columna en móviles, 2 en tablets y hasta 4 en pantallas grandes (Escritorio).
+
+Atentamente,
+Tu Ingeniero de Wisbe.

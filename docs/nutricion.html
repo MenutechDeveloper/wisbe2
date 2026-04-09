@@ -261,8 +261,8 @@
             document.getElementById('modal-time').innerText = r.prep_time || '20 min';
             document.getElementById('modal-difficulty').innerText = r.difficulty || 'Media';
             document.getElementById('modal-diet').innerText = r.diet_type || 'Equilibrada';
-            document.getElementById('modal-ingredients').innerText = r.ingredients || 'Secretos culinarios no especificados.';
-            document.getElementById('modal-instructions').innerText = r.instructions || 'Sigue los instintos maestros de un chef fitness.';
+            document.getElementById('modal-ingredients').innerText = Array.isArray(r.ingredients) ? r.ingredients.join('\n') : (r.ingredients || '');
+            document.getElementById('modal-instructions').innerText = Array.isArray(r.instructions) ? r.instructions.join('\n') : (r.instructions || '');
             document.getElementById('modal-image').src = r.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800';
 
             modal.classList.remove('hidden');

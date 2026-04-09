@@ -26,6 +26,7 @@
                     <div>
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Dominio a probar</label>
                         <input type="text" id="test-domain" class="input font-mono" placeholder="ej: gympro.xyz">
+                        <p class="text-[9px] text-slate-400 mt-2 uppercase font-bold tracking-tighter">Debe ser el mismo que configuraste en tu perfil.</p>
                     </div>
                     <div>
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Módulo</label>
@@ -35,15 +36,20 @@
                             <option value="entrenadores">Entrenadores</option>
                         </select>
                     </div>
-                    <button id="run-test" class="w-full btn btn-primary py-4 font-black uppercase tracking-widest text-xs">
-                        Ejecutar Prueba <i class="fas fa-play ml-2"></i>
+                    <button id="run-test" class="w-full btn btn-primary py-4 font-black uppercase tracking-widest text-xs shadow-xl shadow-blue-600/20">
+                        EJECUTAR PRUEBA <i class="fas fa-play ml-2"></i>
                     </button>
                 </div>
 
                 <div class="mt-10 pt-10 border-t border-slate-100">
                     <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Código Generado</h4>
                     <div class="bg-slate-900 rounded-xl p-4 relative group">
-                        <code id="generated-code" class="text-emerald-400 text-[10px] block break-all font-mono leading-relaxed"></code>
+                        <code id="generated-code" class="text-emerald-400 text-[10px] block break-all font-mono leading-relaxed">
+                            <!-- Code will appear here -->
+                        </code>
+                        <button id="copy-snippet" class="absolute right-2 top-2 text-slate-500 hover:text-white transition-colors hidden">
+                            <i class="fas fa-copy"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -61,8 +67,8 @@
                             https://mi-sitio-externo.com/index.html
                         </div>
                     </div>
-                    <div id="test-container" class="p-8 flex-grow">
-                        <div class="flex flex-col items-center justify-center py-40 text-slate-300">
+                    <div id="test-container" class="p-8 flex-grow bg-[#fafafa]">
+                        <div id="empty-state" class="flex flex-col items-center justify-center py-40 text-slate-300">
                             <i class="fas fa-vial text-6xl mb-6 opacity-20"></i>
                             <p class="font-bold uppercase tracking-widest text-sm">Esperando configuración...</p>
                         </div>
@@ -74,34 +80,67 @@
 
     <script type="module">
         import { renderNavbar, Auth, showPopup } from './assets/js/utils.js';
-        renderNavbar();
-        const user = await Auth.checkAccess(['gym-admin', 'gym-owner']);
 
-        if (user && user.domain) {
-            document.getElementById('test-domain').value = user.domain;
+        async function init() {
+            renderNavbar();
+            const user = await Auth.checkAccess(['gym-admin', 'gym-owner']);
+
+            if (user && user.domain) {
+                document.getElementById('test-domain').value = user.domain;
+            }
+
+            const runBtn = document.getElementById('run-test');
+            runBtn.addEventListener('click', () => {
+                console.log('[Lab] Iniciando prueba...');
+                const domain = document.getElementById('test-domain').value.trim();
+                const module = document.getElementById('test-module').value;
+                const container = document.getElementById('test-container');
+                const codeDisplay = document.getElementById('generated-code');
+                const copyBtn = document.getElementById('copy-snippet');
+
+                if (!domain) {
+                    showPopup('Error', 'Ingresa un dominio para probar', 'error');
+                    return;
+                }
+
+                // Generar snippet con URL absoluta para Wisbe
+                const snippet = `<div id="wisbe-${module}" domain="${domain}"></div>\n<script src="${window.location.origin}/widget.js"><\/script>`;
+                codeDisplay.innerText = snippet;
+                copyBtn.classList.remove('hidden');
+
+                // Limpiar contenedor y preparar inyección
+                container.innerHTML = `
+                    <div style="margin-bottom: 24px; padding: 12px; background: #eff6ff; border-radius: 16px; font-size: 11px; color: #1e40af; font-weight: 800; text-align: center; border: 1px solid #bfdbfe; text-transform: uppercase; letter-spacing: 1px;">
+                        <i class="fas fa-robot mr-2"></i> Simulando Entorno Externo para: ${domain}
+                    </div>
+                    <div id="wisbe-${module}" domain="${domain}"></div>
+                `;
+
+                // Forzar carga/re-ejecución de widget.js
+                // Eliminamos cualquier script de widget previo para evitar conflictos en el mismo documento
+                const oldScript = document.getElementById('wisbe-tester-script');
+                if (oldScript) oldScript.remove();
+
+                const script = document.createElement('script');
+                script.id = 'wisbe-tester-script';
+                script.src = 'widget.js?t=' + Date.now();
+                document.body.appendChild(script);
+
+                console.log('[Lab] Widget inyectado correctamente.');
+                showPopup('Simulación en marcha', 'El widget se está conectando con Wisbe.xyz...');
+            });
+
+            document.getElementById('copy-snippet').onclick = () => {
+                const text = document.getElementById('generated-code').innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    showPopup('Copiado', 'El código está en tu portapapeles.');
+                });
+            };
         }
 
-        document.getElementById('run-test').onclick = () => {
-            const domain = document.getElementById('test-domain').value.trim();
-            const module = document.getElementById('test-module').value;
-            const container = document.getElementById('test-container');
-            const codeDisplay = document.getElementById('generated-code');
-
-            if (!domain) return showPopup('Error', 'Ingresa un dominio para probar', 'error');
-
-            const snippet = `<div id="wisbe-${module}" domain="${domain}"></div>\n<script src="https://wisbe.xyz/widget.js"><\/script>`;
-            codeDisplay.innerText = snippet;
-
-            // Clear container
-            container.innerHTML = `<div id="wisbe-${module}" domain="${domain}"></div>`;
-
-            // Re-load script dynamically to simulate external loading
-            const script = document.createElement('script');
-            script.src = 'widget.js?t=' + Date.now(); // Cache busting
-            document.body.appendChild(script);
-
-            showPopup('Prueba Iniciada', 'Inyectando widget en el entorno de pruebas...');
-        };
+        init().catch(err => {
+            console.error('[Lab Critical]', err);
+        });
     </script>
 </body>
 </html>

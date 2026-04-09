@@ -209,10 +209,16 @@
             // Populate Widget Integration data
             const domainText = currentUser.domain || 'SIN DOMINIO';
             document.getElementById('user-domain').innerText = domainText;
+
+            // Generate full script URL based on current location
+            const currentPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+            const scriptUrl = window.location.origin + currentPath + '/wisbeUI.js';
+            document.getElementById('script-code').innerText = `<script src="${scriptUrl}"></script>`;
+
             if (currentUser.domain) {
                 document.getElementById('widget-code').innerText = `<wisbe-gymnutricion domain="${currentUser.domain}"></wisbe-gymnutricion>`;
             } else {
-                document.getElementById('widget-code').innerText = 'ERROR: CONFIGURA TU DOMINIO';
+                document.getElementById('widget-code').innerText = 'ERROR: CONFIGURA TU DOMINIO EN TU PERFIL';
             }
 
             isAdmin = currentUser.role === 'gym-admin';

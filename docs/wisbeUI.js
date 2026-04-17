@@ -466,4 +466,9 @@
     if (!customElements.get('wisbe-gymnutricion')) customElements.define('wisbe-gymnutricion', WisbeNutricion);
     if (!customElements.get('wisbe-gymrutinas')) customElements.define('wisbe-gymrutinas', WisbeRutinas);
     if (!customElements.get('wisbe-gymentrenadores')) customElements.define('wisbe-gymentrenadores', WisbeEntrenadores);
+
+    // Aliases requested by user
+    if (!customElements.get('wisbe-gym-recetas')) customElements.define('wisbe-gym-recetas', WisbeNutricion);
+    if (!customElements.get('wisbe-gym-rutinas')) customElements.define('wisbe-gym-rutinas', WisbeRutinas);
+    if (!customElements.get('wisbe-gym-staff')) customElements.define('wisbe-gym-staff', WisbeEntrenadores);
 })();

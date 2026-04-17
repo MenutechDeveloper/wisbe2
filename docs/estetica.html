@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estética & Beauty Salon | Wisbe</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS Frameworks -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./assets/css/salon.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-salon fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="./assets/img/wisbelogo.png" alt="Wisbe Beauty" height="40">
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#home" data-i18n="nav_home">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services" data-i18n="nav_services">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#menu" data-i18n="nav_menu">Menú</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#booking" data-i18n="nav_booking">Citas</a></li>
+                    <li class="nav-item ms-lg-3 d-flex gap-2">
+                        <button class="lang-switch active" data-lang="es">ES</button>
+                        <button class="lang-switch" data-lang="en">EN</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-salon">
+        <div class="container">
+            <div class="hero-content" data-reveal>
+                <h5 class="text-gold text-uppercase fw-bold mb-3" data-i18n="hero_subtitle">Elegancia y Estilo</h5>
+                <h1 class="hero-title text-white" data-i18n="hero_title">Donde la Belleza Encuentra su <span class="text-gold">Perfección</span></h1>
+                <div class="mt-5">
+                    <a href="#booking" class="btn btn-salon me-3" data-i18n="hero_cta">Reserva Ahora</a>
+                    <a href="#services" class="btn btn-salon-outline" data-i18n="nav_services">Servicios</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <section id="services" class="py-5 bg-dark">
+        <div class="container py-5">
+            <div class="text-center mb-5" data-reveal>
+                <h2 class="display-4 text-white" data-i18n="services_title">Nuestros Servicios</h2>
+                <div class="divider mx-auto bg-gold" style="width: 80px; height: 3px; background: var(--accent-gold); margin-top: 20px;"></div>
+            </div>
+
+            <div class="row g-4 mt-4">
+                <!-- Hair -->
+                <div class="col-md-4" data-reveal>
+                    <div class="service-card text-center">
+                        <div class="service-icon"><i class="fas fa-cut"></i></div>
+                        <h3 class="h4 text-white mb-3" data-i18n="services_hair">Corte y Peinado</h3>
+                        <p class="text-gray" data-i18n="services_hair_desc">Estilos personalizados que resaltan tu personalidad.</p>
+                    </div>
+                </div>
+                <!-- Nails -->
+                <div class="col-md-4" data-reveal>
+                    <div class="service-card text-center">
+                        <div class="service-icon"><i class="fas fa-hand-sparkles"></i></div>
+                        <h3 class="h4 text-white mb-3" data-i18n="services_nails">Manicura y Pedicura</h3>
+                        <p class="text-gray" data-i18n="services_nails_desc">Cuidado excepcional para tus manos y pies.</p>
+                    </div>
+                </div>
+                <!-- Aesthetics -->
+                <div class="col-md-4" data-reveal>
+                    <div class="service-card text-center">
+                        <div class="service-icon"><i class="fas fa-spa"></i></div>
+                        <h3 class="h4 text-white mb-3" data-i18n="services_aesthetics">Estética Avanzada</h3>
+                        <p class="text-gray" data-i18n="services_aesthetics_desc">Tratamientos faciales y corporales de última generación.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Menu Section -->
+    <section id="menu" class="py-5 bg-darker">
+        <div class="container py-5">
+            <div class="text-center mb-5" data-reveal>
+                <h2 class="display-4 text-white" data-i18n="menu_title">Menú de Belleza</h2>
+                <p class="text-gray" data-i18n="menu_subtitle">Nuestros servicios más exclusivos con precios transparentes.</p>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-lg-6" data-reveal>
+                    <h3 class="h4 text-gold mb-4 border-bottom border-gold pb-2" data-i18n="services_hair">Corte y Peinado</h3>
+                    <div class="pricing-item d-flex justify-content-between mb-3">
+                        <span class="text-white">Corte Dama Pro</span>
+                        <span class="text-gold fw-bold">$45</span>
+                    </div>
+                    <div class="pricing-item d-flex justify-content-between mb-3">
+                        <span class="text-white">Color Global</span>
+                        <span class="text-gold fw-bold">$85+</span>
+                    </div>
+                    <div class="pricing-item d-flex justify-content-between mb-3">
+                        <span class="text-white">Balayage Signature</span>
+                        <span class="text-gold fw-bold">$120+</span>
+                    </div>
+                    <div class="pricing-item d-flex justify-content-between mb-3">
+                        <span class="text-white">Peinado Gala</span>
+                        <span class="text-gold fw-bold">$60</span>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-reveal>
+                    <h3 class="h4 text-gold mb-4 border-bottom border-gold pb-2" data-i18n="services_aesthetics">Estética</h3>
+                    <div class="pricing-item d-flex justify-content-between mb-3">
+                        <span class="text-white">Limpieza Facial Profunda</span>
+                        <span class="text-gold fw-bold">$55</span>
+                    </div>
+                    <div class="pricing-item d-flex justify-content-between mb-3">
+                        <span class="text-white">Hidratación con Ácido Hialurónico</span>
+                        <span class="text-gold fw-bold">$75</span>
+                    </div>
+                    <div class="pricing-item d-flex justify-content-between mb-3">
+                        <span class="text-white">Masaje Relajante (60 min)</span>
+                        <span class="text-gold fw-bold">$65</span>
+                    </div>
+                    <div class="pricing-item d-flex justify-content-between mb-3">
+                        <span class="text-white">Manicura Spa</span>
+                        <span class="text-gold fw-bold">$30</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stylists Section -->
+    <section id="stylists" class="py-5 bg-black">
+        <div class="container py-5">
+            <div class="text-center mb-5" data-reveal>
+                <h2 class="display-4 text-white" data-i18n="stylists_title">Nuestros Expertos</h2>
+                <p class="text-gray" data-i18n="stylists_subtitle">Profesionales dedicados a realzar tu belleza natural.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4" data-reveal>
+                    <div class="team-card">
+                        <img src="https://images.unsplash.com/photo-1595152772835-219674b2a8a6?q=80&w=800&auto=format&fit=crop" alt="Stylist">
+                        <div class="team-info">
+                            <h4 class="text-white">Elena Rodriguez</h4>
+                            <p class="text-gold">Master Stylist</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" data-reveal>
+                    <div class="team-card">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop" alt="Stylist">
+                        <div class="team-info">
+                            <h4 class="text-white">Sofia Chen</h4>
+                            <p class="text-gold">Nail Artist</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" data-reveal>
+                    <div class="team-card">
+                        <img src="https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=800&auto=format&fit=crop" alt="Stylist">
+                        <div class="team-info">
+                            <h4 class="text-white">Marcus Thorne</h4>
+                            <p class="text-gold">Aesthetic Specialist</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-5 bg-dark">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-md-4" data-reveal>
+                    <div class="testimonial-card p-4 text-center">
+                        <i class="fas fa-quote-left text-gold mb-3 fs-2"></i>
+                        <p class="fst-italic text-gray" data-i18n="test_1">"La mejor experiencia en salón. Elena transformó mi cabello por completo. El ambiente es puro lujo."</p>
+                        <h5 class="text-white mt-3">- Maria G.</h5>
+                    </div>
+                </div>
+                <div class="col-md-4" data-reveal>
+                    <div class="testimonial-card p-4 text-center">
+                        <i class="fas fa-quote-left text-gold mb-3 fs-2"></i>
+                        <p class="fst-italic text-gray" data-i18n="test_2">"Tratamientos faciales increíbles. Salí con la piel radiante. ¡Altamente recomendado!"</p>
+                        <h5 class="text-white mt-3">- Lucía M.</h5>
+                    </div>
+                </div>
+                <div class="col-md-4" data-reveal>
+                    <div class="testimonial-card p-4 text-center">
+                        <i class="fas fa-quote-left text-gold mb-3 fs-2"></i>
+                        <p class="fst-italic text-gray" data-i18n="test_3">"Un oasis en la ciudad. El servicio de manicura spa es excepcional y muy relajante."</p>
+                        <h5 class="text-white mt-3">- Carlos D.</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="booking-section">
+        <div class="container">
+            <div class="text-center mb-5" data-reveal>
+                <h2 class="display-4 text-white" data-i18n="booking_title">Agenda tu Cita</h2>
+                <p class="text-gray" data-i18n="booking_subtitle">Selecciona el servicio y profesional de tu preferencia.</p>
+            </div>
+
+            <div class="booking-container mx-auto" style="max-width: 900px;" data-reveal>
+                <!-- Wisbe Beauty Booking Widget -->
+                <wisbe-beauty-citas domain="gympro.xyz"></wisbe-beauty-citas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-5 bg-black border-top border-secondary">
+        <div class="container py-4">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <img src="./assets/img/wisbelogo.png" alt="Wisbe Beauty" height="40" class="mb-4">
+                    <p class="text-gray" data-i18n="footer_about">Wisbe Beauty Salon - Tu oasis de belleza y relajación.</p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="text-white fs-5"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-white fs-5"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white fs-5"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 offset-lg-2">
+                    <h5 class="text-white mb-4" data-i18n="nav_services">Servicios</h5>
+                    <ul class="list-unstyled text-gray">
+                        <li class="mb-2" data-i18n="services_hair">Corte y Peinado</li>
+                        <li class="mb-2" data-i18n="services_nails">Manicura</li>
+                        <li class="mb-2" data-i18n="services_aesthetics">Estética</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="text-white mb-4" data-i18n="footer_contact">Contacto</h5>
+                    <ul class="list-unstyled text-gray">
+                        <li class="mb-2"><i class="fas fa-phone me-2 text-gold"></i> +1 877 859 0858</li>
+                        <li class="mb-2"><i class="fas fa-envelope me-2 text-gold"></i> contact@wisbe.xyz</li>
+                        <li class="mb-2"><i class="fas fa-location-dot me-2 text-gold"></i> Dover, DE 19901</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-5 border-secondary">
+            <div class="text-center text-gray small" data-i18n="footer_rights">
+                © 2025 Wisbe Beauty. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/js/salon.js"></script>
+    <script src="https://wisbe.xyz/wisbeBeauty.js"></script>
+</body>
+</html>

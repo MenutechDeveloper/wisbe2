@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConstruccionUSA | Professional Construction Services</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Raleway:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS Frameworks -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./assets/css/construccionUSA.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-construction fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="./assets/img/iconwisbe.png" alt="Logo" height="35" class="me-2">
+                <span class="text-white fw-black font-main">CONSTRUCCION<span class="text-accent">USA</span></span>
+            </a>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#home" data-i18n="nav_home">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services" data-i18n="nav_services">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about" data-i18n="nav_about">Nosotros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects" data-i18n="nav_projects">Proyectos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact" data-i18n="nav_contact">Contacto</a></li>
+                    <li class="nav-item ms-lg-3 d-flex gap-2">
+                        <button class="lang-switch active" data-lang="es">ES</button>
+                        <button class="lang-switch" data-lang="en">EN</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-construction">
+        <div class="container">
+            <div class="hero-content" data-reveal>
+                <span class="hero-subtitle" data-i18n="hero_subtitle">EXCELENCIA EN CONSTRUCCIÓN</span>
+                <h1 class="hero-title text-white" data-i18n="hero_title">CONSTRUIMOS TU <span class="text-accent">SUEÑO</span> AMERICANO</h1>
+                <div class="mt-5">
+                    <a href="#contact" class="btn btn-construction me-3 shadow-lg" data-i18n="hero_cta">Cotizar Ahora</a>
+                    <a href="#projects" class="btn btn-outline-construction" data-i18n="hero_cta_outline">Ver Proyectos</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <section id="services">
+        <div class="container">
+            <div class="text-center mb-5" data-reveal>
+                <h2 class="section-title text-white" data-i18n="services_title">Nuestros Servicios</h2>
+            </div>
+
+            <div class="row g-4 mt-4">
+                <div class="col-md-4" data-reveal>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-home"></i></div>
+                        <h3 class="h4 text-white mb-3" data-i18n="service_1_title">Remodelaciones</h3>
+                        <p class="text-gray" data-i18n="service_1_desc">Transformamos tus espacios con acabados de lujo y diseño funcional.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-reveal>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-tools"></i></div>
+                        <h3 class="h4 text-white mb-3" data-i18n="service_2_title">Estructuras (Framing)</h3>
+                        <p class="text-gray" data-i18n="service_2_desc">Estructuras sólidas y precisas cumpliendo con todos los códigos de construcción.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-reveal>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-shield-halved"></i></div>
+                        <h3 class="h4 text-white mb-3" data-i18n="service_3_title">Techos (Roofing)</h3>
+                        <p class="text-gray" data-i18n="service_3_desc">Protección duradera con materiales de alta calidad para tu hogar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="bg-darker">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0" data-reveal>
+                    <img src="https://images.unsplash.com/photo-1503387762-592dee58c460?q=80&w=2070&auto=format&fit=crop" alt="Construction Site" class="img-fluid rounded-4 shadow-lg">
+                </div>
+                <div class="col-lg-6 ps-lg-5" data-reveal>
+                    <h2 class="section-title text-white" data-i18n="about_title">Sobre Nosotros</h2>
+                    <p class="text-gray fs-5" data-i18n="about_text">
+                        Con años de experiencia en el mercado estadounidense, nos especializamos en ofrecer servicios de construcción de alta calidad. Nuestro compromiso es la satisfacción total del cliente a través de un trabajo profesional, honesto y puntual.
+                    </p>
+                    <div class="row mt-4 g-4">
+                        <div class="col-sm-4">
+                            <div class="text-accent fw-bold fs-2">10+</div>
+                            <div class="small text-white" data-i18n="why_1_title">Calidad Certificada</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="text-accent fw-bold fs-2">500+</div>
+                            <div class="small text-white" data-i18n="nav_projects">Proyectos</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="text-accent fw-bold fs-2">100%</div>
+                            <div class="small text-white" data-i18n="stat_satisfaction">Satisfacción</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <div class="container">
+            <div class="text-center mb-5" data-reveal>
+                <h2 class="section-title text-white" data-i18n="projects_title">Proyectos Recientes</h2>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4" data-reveal>
+                    <div class="project-card">
+                        <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=2074&auto=format&fit=crop" alt="Project 1" class="project-img">
+                        <div class="project-overlay">
+                            <h4 class="text-white" data-i18n="project_1_title">Residencia Moderna</h4>
+                            <p class="text-gray mb-0" data-i18n="project_1_desc">Remodelación completa de interiores en Miami.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" data-reveal>
+                    <div class="project-card">
+                        <img src="https://images.unsplash.com/photo-1517581177682-a085bb7ffb15?q=80&w=2072&auto=format&fit=crop" alt="Project 2" class="project-img">
+                        <div class="project-overlay">
+                            <h4 class="text-white" data-i18n="project_2_title">Estructura Comercial</h4>
+                            <p class="text-gray mb-0" data-i18n="project_2_desc">Construcción de framing para plaza comercial en Texas.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" data-reveal>
+                    <div class="project-card">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" alt="Project 3" class="project-img">
+                        <div class="project-overlay">
+                            <h4 class="text-white" data-i18n="project_3_title">Villa de Lujo</h4>
+                            <p class="text-gray mb-0" data-i18n="project_3_desc">Acabados premium y techado especializado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section id="why" class="bg-darker">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-4" data-reveal>
+                    <h2 class="section-title text-white" data-i18n="why_title">¿Por Qué Elegirnos?</h2>
+                </div>
+                <div class="col-lg-8">
+                    <div class="row g-4">
+                        <div class="col-md-4" data-reveal>
+                            <div class="service-card h-auto py-5 text-center">
+                                <i class="fas fa-award text-accent fs-1 mb-4"></i>
+                                <h4 class="h6 text-white" data-i18n="why_1_title">Calidad Certificada</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-4" data-reveal>
+                            <div class="service-card h-auto py-5 text-center">
+                                <i class="fas fa-hand-holding-dollar text-accent fs-1 mb-4"></i>
+                                <h4 class="h6 text-white" data-i18n="why_2_title">Precios Competitivos</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-4" data-reveal>
+                            <div class="service-card h-auto py-5 text-center">
+                                <i class="fas fa-file-shield text-accent fs-1 mb-4"></i>
+                                <h4 class="h6 text-white" data-i18n="why_3_title">Seguro y Licencia</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center" data-reveal>
+                    <h2 class="section-title text-white" data-i18n="contact_title">Contáctanos</h2>
+                    <p class="text-gray mb-5">¿Tienes un proyecto en mente? Solicita una cotización sin compromiso.</p>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="service-card" data-reveal>
+                        <form class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label text-white" data-i18n="form_name">Nombre</label>
+                                <input type="text" class="form-control bg-transparent text-white border-secondary">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-white" data-i18n="form_email">Email</label>
+                                <input type="email" class="form-control bg-transparent text-white border-secondary">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-white" data-i18n="form_message">Mensaje</label>
+                                <textarea class="form-control bg-transparent text-white border-secondary" rows="5"></textarea>
+                            </div>
+                            <div class="col-12 text-center mt-5">
+                                <button type="submit" class="btn btn-construction px-5" data-i18n="hero_cta">Cotizar Ahora</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black">
+        <div class="container py-4">
+            <div class="row g-4 mb-5">
+                <div class="col-lg-4">
+                    <div class="navbar-brand d-flex align-items-center mb-4">
+                        <img src="./assets/img/iconwisbe.png" alt="Logo" height="30" class="me-2">
+                        <span class="text-white fw-black font-main">CONSTRUCCION<span class="text-accent">USA</span></span>
+                    </div>
+                    <p class="text-gray">Liderando la industria de la construcción con integridad y profesionalismo en los Estados Unidos.</p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="text-white fs-5"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-white fs-5"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white fs-5"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 offset-lg-2">
+                    <h5 class="text-white mb-4" data-i18n="nav_services">Servicios</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#services" class="text-gray text-decoration-none">Remodeling</a></li>
+                        <li class="mb-2"><a href="#services" class="text-gray text-decoration-none">Framing</a></li>
+                        <li class="mb-2"><a href="#services" class="text-gray text-decoration-none">Roofing</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="text-white mb-4" data-i18n="nav_contact">Contacto</h5>
+                    <ul class="list-unstyled text-gray">
+                        <li class="mb-2"><i class="fas fa-phone me-2 text-accent"></i> +1 800 BUILD USA</li>
+                        <li class="mb-2"><i class="fas fa-envelope me-2 text-accent"></i> info@construccionusa.com</li>
+                        <li class="mb-2"><i class="fas fa-location-dot me-2 text-accent"></i> 456 Builder Ave, Houston, TX</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary opacity-25">
+            <div class="text-center text-gray small mt-4" data-i18n="footer_rights">
+                © 2025 ConstruccionUSA. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/js/construccionUSA.js"></script>
+    <script src="https://wisbe.xyz/wisbeUI.js"></script>
+</body>
+</html>
